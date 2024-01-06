@@ -82,6 +82,13 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
 
     }
+    public function publish($id)
+    {
+        $product = Product::find($id);
+        $product->published = !$product->published;
+        $product->save();
+        return redirect()->route('admin.products.index')->with('success', 'Product published successfully');
+    }
     public function delete($id)
     {
         $product = Product::find($id);

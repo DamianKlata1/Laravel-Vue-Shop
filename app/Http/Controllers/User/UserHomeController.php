@@ -13,7 +13,11 @@ class UserHomeController extends Controller
 {
     public function index()
     {
-        $products = Product::with('brand', 'category', 'product_images')->orderBy('id', 'desc')->limit(8)->get();
+        $products = Product::with('brand', 'category', 'product_images')
+            ->where('published', true)
+            ->orderBy('id', 'desc')
+            ->limit(8)
+            ->get();
 
 
         return Inertia::render('User/UserHome', [

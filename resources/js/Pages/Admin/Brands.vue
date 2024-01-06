@@ -231,7 +231,7 @@ const dialogImageVisible = ref(false);
 
 const addBrand = async () => {
     const formData = new FormData();
-    formData.append('name', title.value);
+    formData.append('name', name.value);
     try {
         await router.post('/admin/brands/store', formData, {
             onSuccess: page => {

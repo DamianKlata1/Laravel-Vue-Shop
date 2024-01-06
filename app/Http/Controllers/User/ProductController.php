@@ -20,7 +20,7 @@ class ProductController extends Controller
         ]);
     }
     public function list(Request $request){
-        $products = Product::with('category','brand','product_images');
+        $products = Product::with('category','brand','product_images')->where('published',true);
         $filteredProducts = $products->filtered()->paginate(10)->withQueryString();
         $categories = Category::get();
         $brands = Brand::get();
