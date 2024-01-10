@@ -162,40 +162,22 @@
                                  class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
                                 <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Choose brand</h6>
                                 <ul class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
-                                    <li class="flex items-center">
+                                    <li class="flex items-center" v-for="brand in brands" :key="brand.id" :value="brand.id">
                                         <input id="apple" type="checkbox" value=""
                                                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                                         <label for="apple"
-                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Apple
-                                            (56)</label>
+                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ brand.name }}
+                                            ({{ getBrandProductCount(brand) }})</label>
                                     </li>
-                                    <li class="flex items-center">
-                                        <input id="fitbit" type="checkbox" value=""
+                                </ul>
+                                <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Choose category</h6>
+                                <ul class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
+                                    <li class="flex items-center" v-for="category in categories" :key="category.id" :value="category.id">
+                                        <input id="apple" type="checkbox" value=""
                                                class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="fitbit"
-                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Microsoft
-                                            (16)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="razor" type="checkbox" value=""
-                                               class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="razor"
-                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Razor
-                                            (49)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="nikon" type="checkbox" value=""
-                                               class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="nikon"
-                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Nikon
-                                            (12)</label>
-                                    </li>
-                                    <li class="flex items-center">
-                                        <input id="benq" type="checkbox" value=""
-                                               class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                        <label for="benq"
-                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">BenQ
-                                            (74)</label>
+                                        <label for="apple"
+                                               class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ category.name }}
+                                            ({{ getCategoryProductCount(category) }})</label>
                                     </li>
                                 </ul>
                             </div>
@@ -229,7 +211,7 @@
                             <td class="px-4 py-3">{{ product.quantity }}</td>
                             <td class="px-4 py-3">${{ product.price }}</td>
                             <td class="px-4 py-3">
-                                <span v-if="product.inStock"
+                                <span v-if="product.quantity > 0"
                                     class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Available</span>
                                 <span v-else
                                     class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Not Available</span>
@@ -261,8 +243,8 @@
                                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
                                         :aria-labelledby="`${product.id}-dropdown-button`">
                                         <li>
-                                            <a href="#"
-                                               class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
+                                            <Link :href="route('products.showDetails', product.id)"
+                                               class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</Link>
                                         </li>
                                         <li>
                                             <button @click="openEditModal(product)"
@@ -294,7 +276,7 @@
 </template>
 
 <script setup>
-import {usePage} from "@inertiajs/vue3";
+import {usePage,Link} from "@inertiajs/vue3";
 import {ref} from "vue";
 import {router} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
@@ -308,8 +290,19 @@ defineProps({
         default: () => []
     }
 })
+
+
 const brands = usePage().props.brands
 const categories = usePage().props.categories
+
+const productsArray = Object.entries(usePage().props.products.data).map(([brand]) => ({ brand}));
+console.log(productsArray)
+const getBrandProductCount = (brand) => {
+    return productsArray.filter(product => product.brand_id === brand.id).length
+}
+const getCategoryProductCount = (category) => {
+    return productsArray.filter(product => product.category_id === category.id).length
+}
 
 const id = ref('');
 const title = ref('');
@@ -503,6 +496,7 @@ const publish = async (product) => {
                     icon: "success",
                     position: "top-end",
                     showConfirmButton: false,
+                    timer: 1500,
                     title: page.props.flash.success
                 })
             },

@@ -92,7 +92,7 @@
                                     <!--                                    <span-->
                                     <!--                                        class="text-base font-normal text-gray-500 line-through dark:text-gray-400">$1500.99</span>-->
                                 </p>
-                                <p class="text-green-600 dark:text-green-300" v-if="product.data.in_stock">available</p>
+                                <p class="text-green-600 dark:text-green-300" v-if="product.data.quantity > 0">available</p>
                                 <p class="text-red-600 dark:text-red-300" v-else> not available</p>
                             </div>
                             <!--                            <div class="flex items-center mb-8">-->
@@ -175,7 +175,7 @@
 </template>
 <script setup>
 import UserLayout from "@/Pages/User/Layouts/UserLayout.vue";
-import {router} from "@inertiajs/vue3";
+import {router, usePage} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import {ref, watch} from "vue";
 import {displayAllNotifications} from "@/Helpers/notification.js";
@@ -193,6 +193,14 @@ const selectedImageSrc = ref(null);
 watch(quantity, (newQuantity, oldQuantity) => {
     if (newQuantity < 1) {
         quantity.value = 1;
+    }
+    if(newQuantity > usePage().props.product.data.quantity){
+        quantity.value = usePage().props.product.data.quantity;
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'There is not enough quantity in stock!',
+        })
     }
 })
 
