@@ -295,13 +295,12 @@ defineProps({
 const brands = usePage().props.brands
 const categories = usePage().props.categories
 
-const productsArray = Object.entries(usePage().props.products.data).map(([brand]) => ({ brand}));
-console.log(productsArray)
+
 const getBrandProductCount = (brand) => {
-    return productsArray.filter(product => product.brand_id === brand.id).length
+    return usePage().props.products.data.filter(product => product.brand_id === brand.id).length
 }
 const getCategoryProductCount = (category) => {
-    return productsArray.filter(product => product.category_id === category.id).length
+    return usePage().props.products.data.filter(product => product.category_id === category.id).length
 }
 
 const id = ref('');
