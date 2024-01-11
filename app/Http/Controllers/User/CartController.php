@@ -14,7 +14,7 @@ use Inertia\Inertia;
 class CartController extends Controller
 {
 
-    public function view(Request $request,Product $product)
+    public function view(Request $request)
     {
         $user = $request->user();
         if($user){

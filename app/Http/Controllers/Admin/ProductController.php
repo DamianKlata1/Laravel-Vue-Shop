@@ -12,16 +12,16 @@ use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category', 'brand', 'product_images')->paginate(10)->withQueryString();
+        $products = Product::filtered()->with('category', 'brand', 'product_images')->paginate(10)->withQueryString();
         $brands = Brand::all();
         $categories = Category::all();
 
         return Inertia::render('Admin/Product/index', [
             'products' => $products,
             'brands' => $brands,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 
