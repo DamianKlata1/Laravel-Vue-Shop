@@ -15,7 +15,7 @@ use App\Http\Controllers\User\WishlistController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminAuthController;
 
 /*
@@ -70,7 +70,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function() 
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     //products routes
     Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products.index');

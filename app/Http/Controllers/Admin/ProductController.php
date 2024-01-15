@@ -22,6 +22,8 @@ class ProductController extends Controller
             'products' => $products,
             'brands' => $brands,
             'categories' => $categories,
+            'brandProductCounts' => Product::getBrandProductCounts(),
+            'categoryProductCounts' => Product::getCategoryProductCounts(),
         ]);
     }
 

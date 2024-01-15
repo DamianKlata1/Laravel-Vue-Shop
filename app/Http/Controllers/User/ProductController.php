@@ -30,6 +30,8 @@ class ProductController extends Controller
             'categories' => $categories,
             'brands' => $brands,
             'search' => $search,
+            'brandProductCounts' => Product::getBrandProductCounts(),
+            'categoryProductCounts' => Product::getCategoryProductCounts(),
         ]);
     }
 }

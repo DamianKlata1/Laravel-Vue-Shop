@@ -154,7 +154,7 @@
                                                        :value="brand.id" type="checkbox"
                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"/>
                                                 <label :for="`filter-brand-${brand.id}`"
-                                                       class="ml-3 text-sm text-gray-600">{{ brand.name }}</label>
+                                                       class="ml-3 text-sm text-gray-600">{{ brand.name }}({{ getBrandProductCount(brand) }})</label>
                                             </div>
                                         </div>
                                     </DisclosurePanel>
@@ -180,7 +180,7 @@
                                                        :value="category.id" type="checkbox"
                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"/>
                                                 <label :for="`filter-category-${category.id}`"
-                                                       class="ml-3 text-sm text-gray-600">{{ category.name }}</label>
+                                                       class="ml-3 text-sm text-gray-600">{{ category.name }}({{ getCategoryProductCount(category) }}) </label>
                                             </div>
                                         </div>
                                     </DisclosurePanel>
@@ -268,7 +268,12 @@ defineProps({
         required: true
     }
 })
-
+const getBrandProductCount = (brand) => {
+    return usePage().props.brandProductCounts[brand.id]
+}
+const getCategoryProductCount = (category) => {
+    return usePage().props.categoryProductCounts[category.id]
+}
 const filterPricesForm = useForm({
     prices: [0, 100000]
 })

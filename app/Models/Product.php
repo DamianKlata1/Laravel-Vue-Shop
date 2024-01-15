@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -101,5 +102,21 @@ class Product extends Model
                     $q->withCount('wishlistItems')->orderBy('wishlist_items_count', request('order', 'desc'));
                 }
             });;
+    }
+    public static function getBrandProductCounts()
+    {
+        return DB::table('brands')
+            ->leftJoin('products', 'brands.id', '=', 'products.brand_id')
+            ->select('brands.id as brand_id', DB::raw('count(products.id) as count'))
+            ->groupBy('brands.id')
+            ->pluck('count', 'brand_id');
+    }
+    public static function getCategoryProductCounts()
+    {
+        return DB::table('categories')
+            ->leftJoin('products', 'categories.id', '=', 'products.category_id')
+            ->select('categories.id as category_id', DB::raw('count(products.id) as count'))
+            ->groupBy('categories.id')
+            ->pluck('count', 'category_id');
     }
 }

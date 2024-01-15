@@ -11,7 +11,7 @@
 
                 <div class="border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-16 md:h-32 flex items-center justify-center">
                     <div class="flex flex-col items-center justify-center">
-                        <dt class="mb-2 text-3xl font-extrabold">{{ orders.data.length }}</dt>
+                        <dt class="mb-2 text-3xl font-extrabold">{{ transactionAmount }}</dt>
                         <dd class="text-gray-500 dark:text-gray-400">Transactions</dd>
                     </div>
                 </div>
@@ -145,8 +145,15 @@ defineProps({
         type: Number,
         required: true
     },
+    transactionAmount: {
+        type: Number,
+        required: true
+    },
+    totalIncome: {
+        type: Number,
+        required: true
+    },
 })
-const totalIncome = usePage().props.totalIncome
 function formatDate(timestamp) {
     const date = new Date(timestamp);
     const options = {

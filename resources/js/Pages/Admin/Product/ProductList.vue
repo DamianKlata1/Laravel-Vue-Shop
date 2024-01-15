@@ -308,12 +308,11 @@ watch(selectedBrands, () => {
 watch(selectedCategories, () => {
     updateFilteredProducts()
 })
-
 const getBrandProductCount = (brand) => {
-    return usePage().props.products.data.filter(product => product.brand_id === brand.id).length
+    return usePage().props.brandProductCounts[brand.id]
 }
 const getCategoryProductCount = (category) => {
-    return usePage().props.products.data.filter(product => product.category_id === category.id).length
+    return usePage().props.categoryProductCounts[category.id]
 }
 
 const search_input = ref('');
