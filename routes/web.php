@@ -25,37 +25,41 @@ use App\Http\Controllers\Admin\AdminAuthController;
 
 */
 
-Route::get('/',[UserHomeController::class, 'index'])->name('user.home');
+Route::middleware('trackVisitor')->group(function () {
+    Route::get('/',[UserHomeController::class, 'index'])->name('user.home');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('user.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('user.dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
-        Route::post('/order', 'store')->name('checkout.store');
-        Route::get('/success', 'success')->name('checkout.success');
-        Route::post('/cancel', 'cancel')->name('checkout.cancel');
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
+            Route::post('/order', 'store')->name('checkout.store');
+            Route::get('/success', 'success')->name('checkout.success');
+            Route::post('/cancel', 'cancel')->name('checkout.cancel');
+        });
+        Route::prefix('wishlist')->controller(WishlistController::class)->group(function () {
+            Route::get('/view', 'view')->name('wishlist.view');
+            Route::post('/store/{product}', 'store')->name('wishlist.store');
+            Route::delete('/delete/{wishlistItem}', 'delete')->name('wishlist.delete');
+        });
     });
-    Route::prefix('wishlist')->controller(WishlistController::class)->group(function () {
-        Route::get('/view', 'view')->name('wishlist.view');
-        Route::post('/store/{product}', 'store')->name('wishlist.store');
-        Route::delete('/delete/{wishlistItem}', 'delete')->name('wishlist.delete');
+
+    Route::prefix('cart')->controller(CartController::class)->group(function () {
+        Route::get('/view', 'view')->name('cart.view');
+        Route::post('/store/{product}', 'store')->name('cart.store');
+        Route::patch('/update/{product}', 'update')->name('cart.update');
+        Route::delete('/delete/{product}', 'delete')->name('cart.delete');
+    });
+
+    Route::prefix('products')->controller(UserProductController::class)->group(function () {
+        Route::get('/{product}', 'showDetails')->name('products.showDetails');
+        Route::get('', 'list')->name('products.list');
     });
 });
 
-Route::prefix('cart')->controller(CartController::class)->group(function () {
-    Route::get('/view', 'view')->name('cart.view');
-    Route::post('/store/{product}', 'store')->name('cart.store');
-    Route::patch('/update/{product}', 'update')->name('cart.update');
-    Route::delete('/delete/{product}', 'delete')->name('cart.delete');
-});
 
-Route::prefix('products')->controller(UserProductController::class)->group(function () {
-    Route::get('/{product}', 'showDetails')->name('products.showDetails');
-    Route::get('', 'list')->name('products.list');
-});
 
 /*
 |--------------------------------------------------------------------------

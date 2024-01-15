@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\Visitor
+use App\Models\Visitor;
 
 class TrackVisitor
 {
@@ -16,10 +16,10 @@ class TrackVisitor
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $ip = $request->ip();
+        $ipAddress = $request->ip();
 
-        if(!Visitor::where('ip', $ip)->exists()){
-            Visitor::create(['ip' => $ip]);
+        if(!Visitor::where('ip_address', $ipAddress)->exists()){
+            Visitor::create(['ip_address' => $ipAddress]);
         }
 
         return $next($request);
