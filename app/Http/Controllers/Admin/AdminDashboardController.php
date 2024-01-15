@@ -17,12 +17,13 @@ class AdminDashboardController extends Controller
         $usersAmount = User::all()->count();
         $transactionAmount = Order::all()->count();
         $orders = Order::with('orderItems.product.brand', 'orderItems.product.category', 'created_by')
-            ->orderBy('id', 'desc')->paginate(5)->withQueryString();
+            ->orderBy('id', 'desc');
+        $filteredOrders = $orders->filtered()->paginate(5)->withQueryString();
         $totalIncome = Order::all()->sum('price');
         $uniqueVisitorsAmount = Visitor::all()->count();
         return Inertia::render('Admin/Dashboard', [
             'usersAmount' => $usersAmount,
-            'orders' => $orders,
+            'orders' => $filteredOrders,
             'totalIncome' => $totalIncome,
             'transactionAmount' => $transactionAmount,
             'uniqueVisitorsAmount' => $uniqueVisitorsAmount,
