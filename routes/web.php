@@ -28,9 +28,11 @@ use App\Http\Controllers\Admin\AdminAuthController;
 Route::middleware('trackVisitor')->group(function () {
     Route::get('/',[UserHomeController::class, 'index'])->name('user.home');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('user.dashboard');
 
-    Route::middleware('auth')->group(function () {
+
+    Route::middleware(['auth','verified'])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('user.dashboard');
+
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -2,7 +2,7 @@
     <UserLayout>
 
         <h1 class="text-5xl font-extrabold tracking-tight text-gray-900  items-center max-w-screen-xl mx-auto mt-10">Your Orders</h1>
-        <div v-if="orders.length>0" class="relative overflow-x-auto max-w-screen-xl py-24 mx-auto">
+        <div v-if="orders.length>0" class="relative overflow-x-auto max-w-screen-xl py-12 mx-auto">
             <table v-show="order.order_items.length>0" v-for="order in orders" :key="order.id"
                    class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-5">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

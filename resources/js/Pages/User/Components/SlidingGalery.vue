@@ -19,6 +19,7 @@
                     <p class="text-sm font-semibold ">{{ product.title }}</p>
                     <p class="text-xs ">{{ product.brand.name }}</p>
                     <p class="text-xs ">{{ product.category.name }}</p>
+                    <p class="text-2xl">{{ product.price }} $</p>
                 </div>
             </div>
         </div>
