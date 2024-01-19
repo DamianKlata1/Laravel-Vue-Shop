@@ -7,7 +7,7 @@
                 width="30%"
                 :before-close="handleDialogClose"
             >
-                <form @submit.prevent="isEditUser ? editUser() : addUser()" class="max-w-md mx-auto">
+                <form v-if="isAddUser" @submit.prevent="addUser()" class="max-w-md mx-auto">
                     <div class="relative z-0 w-full mb-5 group">
                         <input v-model="name" type="text" name="floating_name" id="floating_name"
                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -30,17 +30,74 @@
                                class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
                     </div>
                     <div class="relative z-0 w-full mb-5 group">
-                        <input v-model="password_confirmation" type="password" name="floating_password_confirmation" id="floating_password_confirmation"
+                        <input v-model="password_confirmation" type="password" name="floating_password_confirmation"
+                               id="floating_password_confirmation"
                                class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                                placeholder=" " required/>
                         <label for="floating_password_confirmation"
-                               class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm password</label>
+                               class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm
+                            password</label>
+                    </div>
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input id="isAdmin-checkbox" type="checkbox" name="isAdmin" v-model="isAdmin" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="isAdmin-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Admin</label>
                     </div>
                     <button type="submit"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Submit
                     </button>
+                    {{ errors }}
                 </form>
+                <template v-if="isEditUser">
+                    <form v-if="isEditUser" @submit.prevent="editUser()" class="max-w-md mx-auto">
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input v-model="name" type="text" name="floating_name" id="floating_name"
+                                   class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                   placeholder=" " required/>
+                            <label for="floating_name"
+                                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Name</label>
+                        </div>
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input v-model="email" type="email" name="floating_email" id="floating_email"
+                                   class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                   placeholder=" " required/>
+                            <label for="floating_email"
+                                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email</label>
+                        </div>
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input id="default-checkbox" type="checkbox" v-model="isAdmin" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Admin</label>
+                        </div>
+                        <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Submit
+                        </button>
+                    </form>
+                    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-8 mx-auto max-w-md ">Update
+                        password</h1>
+                    <form v-if="isEditUser" @submit.prevent="updatePassword()" class="max-w-md mx-auto">
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input v-model="password" type="password" name="floating_password" id="floating_password"
+                                   class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                   placeholder=" " required/>
+                            <label for="floating_password"
+                                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                        </div>
+                        <div class="relative z-0 w-full mb-5 group">
+                            <input v-model="password_confirmation" type="password" name="floating_password_confirmation"
+                                   id="floating_password_confirmation"
+                                   class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                                   placeholder=" " required/>
+                            <label for="floating_password_confirmation"
+                                   class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm
+                                password</label>
+                        </div>
+                        <button type="submit"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Submit
+                        </button>
+                    </form>
+                </template>
 
             </el-dialog>
             <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
@@ -50,12 +107,14 @@
                         class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                         <div class="w-full md:w-1/2">
                             <form @submit.prevent="search" class="flex items-center">
-                                <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                                <label for="default-search"
+                                       class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2"
                                                   d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                                         </svg>
                                     </div>
@@ -169,10 +228,14 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead
+                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-4 py-3">User name</th>
                                 <th scope="col" class="px-4 py-3">User email</th>
+                                <th scope="col" class="px-4 py-3">Registered at</th>
+                                <th scope="col" class="px-4 py-3">Email verified at</th>
+                                <th scope="col" class="px-4 py-3">Role</th>
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -185,8 +248,15 @@
                                     {{ user.name }}
                                 </th>
                                 <td class="px-4 py-3">{{ user.email }}</td>
+                                <td class="px-4 py-3">{{ formatDate(user.created_at) }}</td>
+                                <td class="px-4 py-3">{{
+                                        formatDate(user.email_verified_at) ? formatDate(user.email_verified_at) : 'Email not verified'
+                                    }}
+                                </td>
+                                <td class="px-4 py-3">{{ user.isAdmin ? 'Admin' : 'User' }}</td>
                                 <td class="px-4 py-3 flex items-center justify-end">
-                                    <button :id="`${user.id}-dropdown-button`" :data-dropdown-toggle="`${user.id}-dropdown`"
+                                    <button :id="`${user.id}-dropdown-button`"
+                                            :data-dropdown-toggle="`${user.id}-dropdown`"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
                                             type="button">
                                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
@@ -212,7 +282,9 @@
                                         </ul>
                                         <div class="py-1">
                                             <button @click="deleteUser(user)"
-                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</button>
+                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                Delete
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
@@ -237,7 +309,9 @@ import {ref} from "vue";
 import {router} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import AdminLayout from "@/Pages/Admin/Components/AdminLayout.vue";
-
+import InputError from "@/Components/InputError.vue";
+import {displayAllNotifications} from "@/Helpers/notification.js";
+import {formatDate} from "@/Helpers/dateFormatter";
 
 defineProps({
     users: {
@@ -245,6 +319,9 @@ defineProps({
         default: () => []
     }
 })
+
+const errors = usePage().props.flash.error;
+
 
 const search_input = ref('');
 
@@ -264,6 +341,7 @@ const search = async () => {
 const id = ref('');
 const name = ref('');
 const email = ref('');
+const isAdmin = ref(false);
 const password = ref('');
 const password_confirmation = ref('');
 
@@ -272,24 +350,17 @@ const dialogImageUrl = ref('');
 const dialogImageVisible = ref(false);
 
 
-
 const addUser = async () => {
     const formData = new FormData();
-    formData.append('name', title.value);
+    formData.append('name', name.value);
     formData.append('email', email.value);
     formData.append('password', password.value);
     formData.append('password_confirmation', password_confirmation.value);
+    formData.append('isAdmin', isAdmin.value);
     try {
         await router.post('/admin/users/store', formData, {
             onSuccess: page => {
-                Swal.fire({
-                    toast: true,
-                    icon: "success",
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    title: page.props.flash.success
-                })
+                displayAllNotifications(page);
                 dialogVisible.value = false;
                 resetForm();
             },
@@ -302,19 +373,13 @@ const editUser = async () => {
     const formData = new FormData();
     formData.append('name', name.value);
     formData.append('email', email.value);
+    formData.append('isAdmin', isAdmin.value);
     formData.append('_method', 'PUT');
 
     try {
         await router.post(`/admin/users/update/${id.value}`, formData, {
             onSuccess: page => {
-                Swal.fire({
-                    toast: true,
-                    icon: "success",
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    title: page.props.flash.success
-                })
+                displayAllNotifications(page);
                 dialogVisible.value = false;
                 resetForm();
             },
@@ -324,7 +389,26 @@ const editUser = async () => {
         console.log(e)
     }
 }
-const deleteUser = async(user) => {
+const updatePassword = async () => {
+    const formData = new FormData();
+    formData.append('password', password.value);
+    formData.append('password_confirmation', password_confirmation.value);
+    formData.append('_method', 'PATCH');
+
+    try {
+        await router.post(`/admin/users/update-password/${id.value}`, formData, {
+            onSuccess: page => {
+                displayAllNotifications(page);
+                dialogVisible.value = false;
+                resetForm();
+            },
+        })
+
+    } catch (e) {
+        console.log(e)
+    }
+}
+const deleteUser = async (user) => {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -359,8 +443,6 @@ const deleteUser = async(user) => {
 }
 
 
-
-
 const isAddUser = ref(false);
 const isEditUser = ref(false);
 const dialogVisible = ref(false);
@@ -376,6 +458,7 @@ const openEditModal = (user) => {
     id.value = user.id;
     name.value = user.name;
     email.value = user.email;
+    isAdmin.value = user.isAdmin === 1;
     password.value = user.password;
     password_confirmation.value = user.password;
 
@@ -389,6 +472,9 @@ const handleDialogClose = () => {
 const resetForm = () => {
     name.value = '';
     email.value = '';
+    password.value = '';
+    password_confirmation.value = '';
+    isAdmin.value = false;
     dialogImageUrl.value = '';
 }
 

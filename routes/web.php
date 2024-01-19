@@ -102,6 +102,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::post('/users/store', [AdminUserController::class, 'store'])->name('admin.users.store');
     Route::put('/users/update/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::patch('/users/update-password/{id}', [AdminUserController::class, 'updatePassword'])->name('admin.users.update_password');
     Route::delete('/users/delete/{id}', [AdminUserController::class, 'delete'])->name('admin.users.delete');
 });
 

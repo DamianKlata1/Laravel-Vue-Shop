@@ -77,6 +77,7 @@
 </template>
 <script setup>
 import UserLayout from './layouts/UserLayout.vue'
+import {formatDate} from "@/Helpers/dateFormatter";
 
 defineProps({
     orders: {
@@ -84,19 +85,7 @@ defineProps({
         required: true
     }
 })
-function formatDate(timestamp) {
-    const date = new Date(timestamp);
-    const options = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false // Use 24-hour format
-    };
-    return date.toLocaleDateString(undefined, options); // Adjust the format as needed
-}
+
 
 </script>
 
