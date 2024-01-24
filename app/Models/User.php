@@ -56,6 +56,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(WishlistItem::class);
     }
+    function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
     function scopeFiltered(Builder $query)
     {
         $query->when(request('search'), function ($query) {

@@ -14,7 +14,7 @@ use Inertia\Inertia;
 class ProductController extends Controller
 {
     public function showDetails(Product $product){
-        $product->load('category','brand','product_images');
+        $product->load('category','brand','product_images','reviews');
         return Inertia::render('User/ProductDetails',[
             'product' => new ProductResource($product),
         ]);

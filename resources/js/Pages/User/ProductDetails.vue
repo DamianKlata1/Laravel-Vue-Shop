@@ -33,66 +33,64 @@
                                       v-if="isNewProduct(product.data.created_at)">New</span>
                                 <h2 class="max-w-xl mt-2 mb-6 text-2xl font-bold dark:text-gray-400 md:text-4xl">
                                     {{ product.data.title }}</h2>
-                                <div class="flex items-center mb-6">
-                                    <ul class="flex mr-2">
-                                        <li>
-                                            <a href="#">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor"
-                                                     class="w-4 mr-1 text-red-500 dark:text-gray-400 bi bi-star "
-                                                     viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor"
-                                                     class="w-4 mr-1 text-red-500 dark:text-gray-400 bi bi-star "
-                                                     viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor"
-                                                     class="w-4 mr-1 text-red-500 dark:text-gray-400 bi bi-star "
-                                                     viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                     fill="currentColor"
-                                                     class="w-4 mr-1 text-red-500 dark:text-gray-400 bi bi-star "
-                                                     viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <p class="text-xs dark:text-gray-400 ">(2 customer reviews)</p>
-                                </div>
-                                <p class="max-w-md mb-8 text-gray-700 dark:text-gray-400">
+                                <p class="max-w-md mb-8 text-gray-700 dark:text-gray-400 my-4">
                                     {{
                                         product.data.description
                                     }}
                                 </p>
+                                <div class="flex items-center my-4">
+                                    <svg class="w-4 h-4 ms-1" :class="{
+                'text-yellow-300': product.data.rating > 0,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=0
+            }" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 ms-1" :class="{
+                'text-yellow-300': product.data.rating > 1,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=1
+            }" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 ms-1" :class="{
+                'text-yellow-300': product.data.rating > 2,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=2
+            }" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 ms-1" :class="{
+                'text-yellow-300': product.data.rating > 3,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=3
+            }" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 ms-1" :class="{
+                'text-yellow-300': product.data.rating > 4,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=4
+            }" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                        <path
+                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                    </svg>
+                                    <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">{{ product.data.rating }}</p>
+                                    <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">out of</p>
+                                    <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">{{product.data.reviews.length}}</p>
+                                </div>
+
                                 <p class="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400 ">
                                     <span>${{ product.data.price }}</span>
                                     <!--                                    <span-->
                                     <!--                                        class="text-base font-normal text-gray-500 line-through dark:text-gray-400">$1500.99</span>-->
                                 </p>
-                                <p class="text-green-600 dark:text-green-300" v-if="product.data.quantity > 0">available</p>
+                                <p class="text-green-600 dark:text-green-300" v-if="product.data.quantity > 0">
+                                    available</p>
                                 <p class="text-red-600 dark:text-red-300" v-else> not available</p>
                             </div>
                             <!--                            <div class="flex items-center mb-8">-->
@@ -169,16 +167,24 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
+            <ReviewForm :product="product.data"></ReviewForm>
+            <Reviews :reviews="product.data.reviews"></Reviews>
         </section>
+
     </UserLayout>
 </template>
 <script setup>
 import UserLayout from "@/Pages/User/Layouts/UserLayout.vue";
+import Reviews from "@/Pages/User/Components/Reviews.vue";
+import ReviewForm from "@/Pages/User/Components/ReviewForm.vue";
 import {router, usePage} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import {ref, watch} from "vue";
 import {displayAllNotifications} from "@/Helpers/notification.js";
+
 
 defineProps({
     product: {
@@ -194,7 +200,7 @@ watch(quantity, (newQuantity, oldQuantity) => {
     if (newQuantity < 1) {
         quantity.value = 1;
     }
-    if(newQuantity > usePage().props.product.data.quantity){
+    if (newQuantity > usePage().props.product.data.quantity) {
         quantity.value = usePage().props.product.data.quantity;
         Swal.fire({
             icon: 'error',

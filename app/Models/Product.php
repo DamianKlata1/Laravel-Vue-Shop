@@ -27,7 +27,8 @@ class Product extends Model
         'brand_id',
         'category_id',
         'deleted_by',
-        'wishlistItems'
+        'wishlistItems',
+        'reviews'
     ];
 
     /**
@@ -64,7 +65,14 @@ class Product extends Model
     {
         return $this->hasMany(WishlistItem::class);
     }
-
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+    public function calculateRating()
+    {
+        return $this->reviews()->avg('rating') ? $this->reviews()->avg('rating') : 0;
+    }
 
     public function scopeFiltered(Builder $query)
     {
