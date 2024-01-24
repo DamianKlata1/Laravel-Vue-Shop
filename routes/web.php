@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\User\ProductController as UserProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\CartController;
@@ -46,6 +47,8 @@ Route::middleware('trackVisitor')->group(function () {
             Route::post('/store/{product}', 'store')->name('wishlist.store');
             Route::delete('/delete/{wishlistItem}', 'delete')->name('wishlist.delete');
         });
+        Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('review.store');
+        Route::post('/reviews/{review}/helpful-toggle', [ReviewController::class, 'toggleMarkAsHelpful'])->name('review.helpful');
     });
 
     Route::prefix('cart')->controller(CartController::class)->group(function () {

@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+
     ];
 
     /**
@@ -59,6 +60,10 @@ class User extends Authenticatable implements MustVerifyEmail
     function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+    function helpfulReviews()
+    {
+        return $this->belongsToMany(Review::class, 'review_helpfuls')->withTimestamps();
     }
     function scopeFiltered(Builder $query)
     {

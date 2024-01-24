@@ -17,7 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->integer('rating');
             $table->text('comment')->nullable();
-
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
 
