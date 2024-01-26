@@ -170,7 +170,8 @@
 
 
             </div>
-            <ReviewForm :product="product.data"></ReviewForm>
+            <ReviewForm :product="product.data" v-if="!checkIfUserHasReviewedProduct(reviews.data)" ></ReviewForm>
+            <h2 class="text-2xl font-bold text-center mb-4" v-else>Thank you for your feedback.</h2>
 
             <div class="overflow-hidden bg-white pt-20 font-poppins dark:bg-gray-800 max-w-prose mx-auto">
                 <Pagination :links="reviews.meta.links"></Pagination>
@@ -199,8 +200,14 @@ defineProps({
     reviews: {
         type: Array,
         required: true
+    },
+    auth: {
+        type: Object,
+        required: true
     }
 })
+
+
 
 const quantity = ref(1);
 const selectedImageSrc = ref(null);
@@ -256,5 +263,9 @@ const addToWishlist = async (product) => {
 }
 const selectImage = (imageSrc) => {
     selectedImageSrc.value = imageSrc;
+}
+
+const checkIfUserHasReviewedProduct = (reviews) => {
+    return reviews.some(review => review.user_id === usePage().props.auth.user.id);
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitReview(product)" class="flex flex-col space-y-4 max-w-prose mx-auto">
+    <form @submit.prevent="submitReview(product)" class="flex flex-col space-y-4 max-w-prose mx-auto" >
         <h2 class="text-2xl font-bold text-center mb-4">We value your feedback! Please leave a review.</h2>
         <div class="flex items-center">
             <svg class="w-4 h-4 ms-1" :class="{
@@ -86,7 +86,7 @@ const submitReview = async (product) => {
         };
         await router.post(`/products/${product.id}/reviews`, data,{
             preserveState: true,
-            onSuccess: page => {
+            onSuccess: (page) => {
                 displayAllNotifications(page)
                 resetForm();
             }
@@ -101,6 +101,7 @@ function resetForm() {
     rating.value = 0;
     comment.value = '';
 }
+
 </script>
 
 

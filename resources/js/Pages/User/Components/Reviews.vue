@@ -5,11 +5,11 @@
         <div v-if="reviews.length === 0">
             <p>No reviews yet for this product.</p>
         </div>
-        <article v-for="review in reviews">
+        <article v-for="review in reviews" class="border-8 border-gray-100 p-3" >
             <div class="flex items-center mb-4">
 
                 <div class="font-medium dark:text-white">
-                    <p>{{ review.user.name }}
+                    <p>{{ review.user.id === auth.user.id ? 'You' : review.user.name }}
                         <time datetime="2014-08-16 19:00" class="block text-sm text-gray-500 dark:text-gray-400">Joined
                             {{ formatDate(review.user.created_at) }}
                         </time>
@@ -80,9 +80,13 @@
                     }} people found this helpful
                 </p>
                 <div class="flex items-center mt-3">
-                    <button @click="toggleMarkAsHelpful(review)"
+                    <button v-if="!checkIfReviewBelongsToUser(review,auth.user)" @click="toggleMarkAsHelpful(review)"
                             class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-xs px-2 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                         {{ !checkIfUserMarkedAsHelpful(review, auth.user) ? 'Helpful' : 'Unmark as helpful' }}
+                    </button>
+                    <button v-else @click="deleteReview(review)"
+                            class="text-gray-900 bg-red-400 border border-red-300 focus:outline-none hover:bg-red-100 focus:ring-4 focus:ring-red-200 font-medium rounded-lg text-xs px-2 py-1.5 dark:bg-red-800 dark:text-white dark:border-red-600 dark:hover:bg-red--700 dark:hover:border-red--600 dark:focus:ring-red--700">
+                        Delete
                     </button>
                     <a href="#"
                        class="ps-4 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 border-gray-200 ms-4 border-s md:mb-0 dark:border-gray-600">Report
@@ -116,7 +120,7 @@ const toggleMarkAsHelpful = async (review) => {
         await router.post(`/reviews/${review.id}/helpful-toggle`, {}, {
             preserveScroll: true,
             preserveState: true,
-            onSuccess: page => {
+            onSuccess: (page) => {
                 displayAllNotifications(page);
             }
         })
@@ -124,9 +128,28 @@ const toggleMarkAsHelpful = async (review) => {
         displayAllNotifications(page);
     }
 }
+const deleteReview = async (review) => {
+    try {
+        await router.delete(`/reviews/${review.id}/delete`, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: (page) => {
+                displayAllNotifications(page);
+            }
+        })
+    } catch (e) {
+        displayAllNotifications(page);
+    }
+}
+
 const checkIfUserMarkedAsHelpful = (review, user) => {
     if (!user) return false;
     return review.helpful_users.some(helpful_user => helpful_user.id === user.id);
+}
+
+const checkIfReviewBelongsToUser = (review, user) => {
+    if (!user) return false;
+    return review.user.id === user.id;
 }
 
 </script>

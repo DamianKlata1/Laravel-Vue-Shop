@@ -31,7 +31,7 @@ class ReviewController extends Controller
 
         $review->save();
 
-        return redirect()->back()->with('message', 'Review added successfully!');
+        return redirect()->back()->with('success', 'Review added successfully!');
     }
 
     public function toggleMarkAsHelpful(Review $review)

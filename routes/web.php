@@ -49,6 +49,7 @@ Route::middleware('trackVisitor')->group(function () {
         });
         Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('review.store');
         Route::post('/reviews/{review}/helpful-toggle', [ReviewController::class, 'toggleMarkAsHelpful'])->name('review.helpful');
+        Route::delete('/reviews/{review}/delete', [ReviewController::class, 'destroy'])->name('review.delete');
     });
 
     Route::prefix('cart')->controller(CartController::class)->group(function () {
@@ -107,6 +108,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/users/update/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
     Route::patch('/users/update-password/{id}', [AdminUserController::class, 'updatePassword'])->name('admin.users.update_password');
     Route::delete('/users/delete/{id}', [AdminUserController::class, 'delete'])->name('admin.users.delete');
+
+    //reviews routes
 });
 
 
