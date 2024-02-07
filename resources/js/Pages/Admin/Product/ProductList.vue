@@ -501,7 +501,7 @@ const openEditModal = (product) => {
     category_id.value = product.category_id;
     brand_id.value = product.brand_id;
     for(const image of product.product_images){
-        image.url = `/${image.image}`
+        image.url = `/storage/${image.image}`
         productImages.value.push(image)
     }
 }

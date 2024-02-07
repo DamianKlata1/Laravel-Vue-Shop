@@ -13,40 +13,48 @@ use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    public function showDetails(Product $product)
+    public function showDetails(Product $product) : \Inertia\Response
     {
-        $perPage = 10; // Adjust the number of reviews per page as needed
+        $perPage = 10;
 
-        $product->load([
+        $product->load(
             'category',
             'brand',
-            'product_images',
-        ]);
+            'product_images')
+            ->loadAvg('reviews', 'rating')
+            ->loadCount('wishlistItems');
 
         $reviews = $product->reviews()
-            ->with('user') // Load the 'user' relation
-            ->orderBy('created_at', 'desc')
+            ->with('user')
+            ->withCount('helpfulUsers')
             ->paginate($perPage)
             ->withQueryString();
+
 
         return Inertia::render('User/ProductDetails', [
             'product' => new ProductResource($product),
             'reviews' => ReviewResource::collection($reviews),
         ]);
     }
-    public function list(Request $request){
-        $products = Product::with('category','brand','product_images')->where('published',true);
+
+    public function list(Request $request) : \Inertia\Response
+    {
+        $products = Product::where('published', true)
+            ->with('category', 'brand', 'product_images')
+            ->withCount('wishlistItems')
+            ->withAvg('reviews', 'rating');
+
         $filteredProducts = $products->filtered()->paginate(10)->withQueryString();
         $categories = Category::get();
         $brands = Brand::get();
         $search = $request->search;
-        return Inertia::render('User/ProductList',[
+        return Inertia::render('User/ProductList', [
             'products' => ProductResource::collection($filteredProducts),
             'categories' => $categories,
             'brands' => $brands,
             'search' => $search,
-            'brandProductCounts' => Product::getBrandProductCounts(),
-            'categoryProductCounts' => Product::getCategoryProductCounts(),
+            'brandProductCounts' => Brand::getBrandProductCounts(),
+            'categoryProductCounts' => Category::getCategoryProductCounts(),
         ]);
     }
 }

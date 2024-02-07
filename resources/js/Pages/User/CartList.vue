@@ -35,7 +35,7 @@
                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <td class="p-4">
                                     <img v-if="product.product_images.length >0"
-                                         :src="`/${product.product_images[0].image}`"
+                                         :src="`/storage/${product.product_images[0].image}`"
                                          class="w-16 md:w-32 max-w-full max-h-full" alt="product image">
                                     <img v-else src="/icons/image-not-found-icon.png"
                                          class="w-16 md:w-32 max-w-full max-h-full" alt="product image">

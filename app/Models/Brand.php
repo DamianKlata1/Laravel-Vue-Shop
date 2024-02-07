@@ -30,4 +30,11 @@ class Brand extends Model
     }
 
 
+    public static function getBrandProductCounts()
+    {
+        return Brand::withCount([ 'products' => function ($query) {
+            $query->where('published', true);
+        }])->pluck('products_count', 'id');
+
+    }
 }

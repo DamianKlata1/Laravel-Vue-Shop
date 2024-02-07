@@ -40,40 +40,40 @@
                                 </p>
                                 <div class="flex items-center my-4">
                                     <svg class="w-4 h-4 ms-1" :class="{
-                'text-yellow-300': product.data.rating > 0,
-                'text-gray-300 dark:text-gray-500': product.data.rating <=0
+                'text-yellow-300': product.data.rating > 0.5,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=0.5
             }" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                                         <path
                                             d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
                                     </svg>
                                     <svg class="w-4 h-4 ms-1" :class="{
-                'text-yellow-300': product.data.rating > 1,
-                'text-gray-300 dark:text-gray-500': product.data.rating <=1
+                'text-yellow-300': product.data.rating > 1.5,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=1.5
             }" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                                         <path
                                             d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
                                     </svg>
                                     <svg class="w-4 h-4 ms-1" :class="{
-                'text-yellow-300': product.data.rating > 2,
-                'text-gray-300 dark:text-gray-500': product.data.rating <=2
+                'text-yellow-300': product.data.rating > 2.5,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=2.5
             }" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                                         <path
                                             d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
                                     </svg>
                                     <svg class="w-4 h-4 ms-1" :class="{
-                'text-yellow-300': product.data.rating > 3,
-                'text-gray-300 dark:text-gray-500': product.data.rating <=3
+                'text-yellow-300': product.data.rating > 3.5,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=3.5
             }" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                                         <path
                                             d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
                                     </svg>
                                     <svg class="w-4 h-4 ms-1" :class="{
-                'text-yellow-300': product.data.rating > 4,
-                'text-gray-300 dark:text-gray-500': product.data.rating <=4
+                'text-yellow-300': product.data.rating > 4.5,
+                'text-gray-300 dark:text-gray-500': product.data.rating <=4.5
             }" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                                         <path
@@ -82,8 +82,18 @@
                                     <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">{{ parseFloat(product.data.rating).toFixed(2) }}</p>
                                     <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">out of</p>
                                     <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">{{reviews.data.length}}</p>
-                                </div>
 
+
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M10 18a1.5 1.5 0 0 1-.943-.344l-4.975-4.475A4.287 4.287 0 0 1 2 9.246C2 7.183 3.456 6 5.5 6c1.24 0 2.29.583 3 1.497C8.21 6.583 9.26 6 10.5 6c2.044 0 3.5 1.183 3.5 3.246 0 1.068-.571 2.125-1.082 2.935L10.943 17.63A1.5 1.5 0 0 1 10 18zm-4-6a2 2 0 1 0 4 0h-1a1 1 0 0 1-2 0H6zm6 0a2 2 0 1 0 4 0h-1a1 1 0 0 1-2 0h-1z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-sm text-gray-500 ml-1">{{ product.data.wishlisted_count }}</span>
+                                </div>
                                 <p class="inline-block mb-8 text-4xl font-bold text-gray-700 dark:text-gray-400 ">
                                     <span>${{ product.data.price }}</span>
                                     <!--                                    <span-->
@@ -266,6 +276,7 @@ const selectImage = (imageSrc) => {
 }
 
 const checkIfUserHasReviewedProduct = (reviews) => {
+    if(!usePage().props.auth.user) return false;
     return reviews.some(review => review.user_id === usePage().props.auth.user.id);
 }
 </script>

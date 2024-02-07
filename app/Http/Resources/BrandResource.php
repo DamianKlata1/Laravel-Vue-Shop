@@ -19,7 +19,6 @@ class BrandResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'brandProductCount' => Product::getBrandProductCounts()[$this->id],
         ];
     }
 }

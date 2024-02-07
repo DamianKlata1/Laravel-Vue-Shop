@@ -4,7 +4,7 @@
             <div
                 class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
 
-                <img v-if="product.product_images.length > 0" :src="`/${product.product_images[0].image}`"
+                <img v-if="product.product_images.length > 0" :src="`/storage/${product.product_images[0].image}`"
                      alt="should be product image"
                      class="h-full w-full object-cover object-center lg:h-full lg:w-full"/>
 

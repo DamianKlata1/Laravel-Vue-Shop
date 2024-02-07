@@ -22,8 +22,8 @@ class ReviewResource extends JsonResource
             'comment'=>$this->comment,
             'created_at'=>$this->created_at,
             'updated_at'=>$this->updated_at,
-            'helpful_users'=>$this->helpfulUsers,
-            'helpful_count'=>$this->helpfulUsers()->count(),
+            'helpful_users'=>$this->whenLoaded('helpfulUsers'),
+            'helpful_count'=>$this->helpful_users_count,
             'user'=>$this->whenLoaded('user'),
         ];
 

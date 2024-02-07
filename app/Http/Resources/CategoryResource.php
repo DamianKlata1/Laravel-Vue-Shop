@@ -19,7 +19,6 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug'=>$this->slug,
-            'categoryProductCount' => Product::getCategoryProductCounts()[$this->id],
         ];
     }
 }

@@ -23,9 +23,17 @@ class Category extends Model
             ->saveSlugsTo('slug');
     }
 
-    function products()
+    public function products()
     {
         return $this->hasMany(Product::class);
     }
 
+
+    public static function getCategoryProductCounts()
+    {
+        return Category::withCount(['products' => function ($query) {
+            $query->where('published', true);
+        }])->pluck('products_count', 'id');
+
+    }
 }

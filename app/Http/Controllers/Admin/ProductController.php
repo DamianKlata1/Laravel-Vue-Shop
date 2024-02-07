@@ -22,34 +22,25 @@ class ProductController extends Controller
             'products' => $products,
             'brands' => $brands,
             'categories' => $categories,
-            'brandProductCounts' => Product::getBrandProductCounts(),
-            'categoryProductCounts' => Product::getCategoryProductCounts(),
+            'brandProductCounts' => Brand::getBrandProductCounts(),
+            'categoryProductCounts' => Category::getCategoryProductCounts(),
         ]);
     }
 
 
     public function store(Request $request)
     {
-        $product = new Product();
-        $product->title = $request->title;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-        $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->brand_id = $request->brand_id;
+        $product = Product::create($request->only([
+            'title', 'price', 'quantity', 'description', 'category_id', 'brand_id'
+        ]));
 
-        $product->save();
-
-
+        // Handle product images
         if ($request->hasFile('product_images')) {
-            $productImages = $request->file('product_images');
-            foreach ($productImages as $productImage) {
-                $uniqueFileName = time() . '-' . uniqid() . '.' . $productImage->getClientOriginalExtension();
-                $productImage->move('product_images', $uniqueFileName);
+            foreach ($request->file('product_images') as $productImage) {
+                $path = $productImage->store('product_images', 'public');
 
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => 'product_images/' . $uniqueFileName
+                $product->product_images()->create([
+                    'image' => $path
                 ]);
             }
         }

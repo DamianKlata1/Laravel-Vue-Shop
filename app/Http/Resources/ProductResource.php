@@ -35,8 +35,9 @@ class ProductResource extends JsonResource
             'brand_id'=>$this->brand_id,
             'brand'=> new BrandResource($this->whenLoaded('brand')),
             'in_stock'=>$this->inStock,
-            'wishlisted_count'=>$this->wishlistItems()->count(),
-            'rating' => $this->calculateRating(),
+            'wishlisted_count'=>$this->wishlist_items_count,
+            'rating' => $this->reviews_avg_rating,
+
 
 
         ];
