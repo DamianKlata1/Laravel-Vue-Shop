@@ -8,10 +8,11 @@ use App\Models\Product;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class UserHomeController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $products = Product::with('brand', 'category', 'product_images')
             ->withCount( 'wishlistItems')

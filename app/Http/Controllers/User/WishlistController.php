@@ -5,11 +5,13 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\WishlistItem;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class WishlistController extends Controller
 {
-    public function view()
+    public function view(): Response
     {
         $wishlistItems = WishlistItem::where('user_id', auth()->user()->id)->with('product.product_images')->get();
         return Inertia::render('User/Wishlist', [
@@ -18,7 +20,7 @@ class WishlistController extends Controller
         );
     }
 
-    public function store(Product $product)
+    public function store(Product $product): RedirectResponse
     {
         $user = auth()->user();
         if (WishlistItem::where(['user_id' => $user->id, 'product_id' => $product->id])->first()) {
@@ -33,7 +35,7 @@ class WishlistController extends Controller
         return redirect()->back()->with('success', 'Product added to wishlist!');
     }
 
-    public function delete(WishlistItem $wishlistItem)
+    public function delete(WishlistItem $wishlistItem): RedirectResponse
     {
         $wishlistItem->delete();
         return redirect()->back()->with('success', 'Product removed from wishlist!');

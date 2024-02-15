@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -24,13 +26,13 @@ class Brand extends Model
             ->saveSlugsTo('slug');
     }
 
-    function products()
+    function products(): HasMany
     {
         return $this->hasMany(Product::class);
     }
 
 
-    public static function getBrandProductCounts()
+    public static function getBrandProductCounts(): Collection
     {
         return Brand::withCount([ 'products' => function ($query) {
             $query->where('published', true);

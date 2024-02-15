@@ -8,11 +8,12 @@ use App\Models\User;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class AdminDashboardController extends Controller
 {
     //
-    public function index()
+    public function index(): Response
     {
         $usersAmount = User::all()->count();
         $transactionAmount = Order::all()->count();

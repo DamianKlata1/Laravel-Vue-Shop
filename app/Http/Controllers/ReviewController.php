@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Review;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,7 @@ class ReviewController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Product $product)
+    public function store(Request $request, Product $product): RedirectResponse
     {
         try {
             $request->validate([
@@ -34,7 +35,7 @@ class ReviewController extends Controller
         return redirect()->back()->with('success', 'Review added successfully!');
     }
 
-    public function toggleMarkAsHelpful(Review $review)
+    public function toggleMarkAsHelpful(Review $review): RedirectResponse
     {
         $user = Auth::user();
 
@@ -60,7 +61,7 @@ class ReviewController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Review $review)
+    public function destroy(Review $review): RedirectResponse
     {
         $review->delete();
         return redirect()->back()->with('success', 'Review deleted successfully');

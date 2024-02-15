@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Helpers\Cart;
+use App\Helpers\UserCartHelper;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,11 +32,8 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
-
-        Cart::saveCookieCartItems();
-
+        UserCartHelper::setCookieCartItemsIntoUser($request->user());
         return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Logged in successfully');
     }
 

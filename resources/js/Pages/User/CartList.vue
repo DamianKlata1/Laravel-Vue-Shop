@@ -31,24 +31,24 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="product in products" :key="product.id"
+                            <tr v-for="cartItem in cartItems.data" :key="cartItem.id"
                                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                 <td class="p-4">
-                                    <img v-if="product.product_images.length >0"
-                                         :src="`/storage/${product.product_images[0].image}`"
+                                    <img v-if="cartItem.product.product_images.length >0"
+                                         :src="`/storage/${cartItem.product.product_images[0].image}`"
                                          class="w-16 md:w-32 max-w-full max-h-full" alt="product image">
                                     <img v-else src="/icons/image-not-found-icon.png"
                                          class="w-16 md:w-32 max-w-full max-h-full" alt="product image">
                                 </td>
                                 <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                    {{ product.title }}
+                                    {{ cartItem.product.title }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <button
-                                            @click.prevent="update(cartItems[getCartItemIndexByProductId(product.id)].quantity - 1,product)"
-                                            :disabled="cartItems[getCartItemIndexByProductId(product.id)].quantity <= 1"
-                                            :class="[cartItems[getCartItemIndexByProductId(product.id)].quantity >1 ? 'cursor-pointer text-purple-600':
+                                            @click.prevent="update(cartItem.quantity - 1,cartItem.product)"
+                                            :disabled="cartItem.quantity <= 1"
+                                            :class="[cartItem.quantity >1 ? 'cursor-pointer text-purple-600':
                                                  'cursor-not-allowed text-gray-300 dark:text-gray-500',  'inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700']"
                                             type="button"
                                         >
@@ -60,13 +60,14 @@
                                             </svg>
                                         </button>
                                         <div>
-                                            <input v-model="cartItems[getCartItemIndexByProductId(product.id)].quantity"
-                                                   type="number" id="first_product"
-                                                   class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                   placeholder="1" required>
+                                            <input
+                                                v-model="cartItem.quantity"
+                                                type="number" id="first_product"
+                                                class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="1" required>
                                         </div>
                                         <button
-                                            @click.prevent="update(cartItems[getCartItemIndexByProductId(product.id)].quantity + 1,product)"
+                                            @click.prevent="update(cartItem.quantity + 1,cartItem.product)"
                                             class="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                                             type="button">
                                             <span class="sr-only">Quantity button</span>
@@ -79,11 +80,12 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                    ${{ product.price }}
+                                    ${{ cartItem.product.price }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <button @click="remove(product)"
-                                       class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</button>
+                                    <button @click="remove(cartItem.product)"
+                                            class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove
+                                    </button>
                                 </td>
                             </tr>
                             </tbody>
@@ -93,10 +95,12 @@
                 </div>
                 <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
                     <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Summary</h2>
-                    <p class="leading-relaxed mb-5 text-gray-600">Total : $ {{ total }} </p>
+                    <p class="leading-relaxed mb-5 text-gray-600">Total : ${{ total }}</p>
                     <div v-if="userAddress">
                         <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Shipping address</h2>
-                        <p class="leading-relaxed mb-5 text-gray-600">{{ userAddress.address1 }}, {{userAddress.city }},
+                        <p class="leading-relaxed mb-5 text-gray-600">{{ userAddress.address1 }}, {{
+                                userAddress.city
+                            }},
                             {{ userAddress.state }}, {{ userAddress.zipcode }} </p>
                         <p class="leading-relaxed mb-5 text-gray-600">or you can add new
                             below</p>
@@ -158,21 +162,25 @@ import {router, usePage} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 
 defineProps({
-    userAddress: Object
+    userAddress: Object,
+    cartItems: Object
 })
 
-const products = computed(() => {
-    return usePage().props.cart.data.products
-})
+// const products = computed(() => {
+//     return usePage().props.cartItems.data.products
+// })
 const total = computed(() => {
-    return usePage().props.cart.data.total
+    return usePage().props.total
 })
 const cartItems = computed(() => {
-    return usePage().props.cart.data.items
-})
+    return usePage().props.cartItems
+}
+)
+
+
 
 const getCartItemIndexByProductId = (id) => {
-    return cartItems.value.findIndex(item => item.product_id === id)
+    return cartItems.data.findIndex(item => item.product_id === id)
 }
 const update = async (quantity, product) => {
     try {

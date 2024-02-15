@@ -9,7 +9,7 @@
                  class="hidden duration-700 ease-in-out"
                  data-carousel-item
                  @click="router.get(route('products.showDetails',product))">
-                <img v-if="product.product_images.length>0" :src="`/${product.product_images[0].image}`"
+                <img v-if="product.product_images.length>0" :src="`/storage/${product.product_images[0].image}`"
                      class="absolute block max-w-full h-auto max-w-xl -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                      alt="product image">
                 <img v-else src="/icons/image-not-found-icon.png"

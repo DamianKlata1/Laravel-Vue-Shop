@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -45,27 +47,37 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
-    function user_addresses()
+    public function user_addresses(): HasMany
     {
         return $this->hasMany(UserAddress::class);
     }
-    function orders()
+
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
-    function wishlist_items()
+
+    public function wishlist_items(): HasMany
     {
         return $this->hasMany(WishlistItem::class);
     }
-    function reviews()
+
+    public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }
-    function helpfulReviews()
+
+    public function helpfulReviews(): BelongsToMany
     {
         return $this->belongsToMany(Review::class, 'review_helpfuls')->withTimestamps();
     }
-    function scopeFiltered(Builder $query)
+
+    public function cart_items(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function scopeFiltered(Builder $query): void
     {
         $query->when(request('search'), function ($query) {
             $query->where('name', 'like', '%' . request('search') . '%');

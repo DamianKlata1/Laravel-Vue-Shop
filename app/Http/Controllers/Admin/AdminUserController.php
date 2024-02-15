@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules;
+use Inertia\Response;
 
 
 class AdminUserController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         $users = User::filtered()->paginate(10)->withQueryString();
         return Inertia::render('Admin/Users', [
@@ -20,7 +22,7 @@ class AdminUserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->merge(['isAdmin' => $request->isAdmin == 'true']);
         try {
@@ -45,7 +47,7 @@ class AdminUserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->merge(['isAdmin' => $request->isAdmin == 'true']);
         try {
@@ -68,14 +70,14 @@ class AdminUserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
-    public function delete($id)
+    public function delete($id): RedirectResponse
     {
         $user = User::find($id);
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 
-    public function updatePassword(Request $request, $id)
+    public function updatePassword(Request $request, $id): RedirectResponse
     {
         try {
             $request->validate([

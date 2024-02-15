@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -41,40 +43,40 @@ class Product extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function product_images()
+    public function product_images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function brand()
+    public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
     }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function cartItems()
+    public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
     }
 
-    public function wishlistItems()
+    public function wishlistItems(): HasMany
     {
         return $this->hasMany(WishlistItem::class);
     }
-    public function reviews()
+    public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }
-    public function calculateRating()
+    public function calculateRating(): float
     {
         return $this->reviews()->avg('rating') ? $this->reviews()->avg('rating') : 0;
     }
 
-    public function scopeFiltered(Builder $query)
+    public function scopeFiltered(Builder $query): void
     {
         $query
             ->when(request('brands'), function (Builder $q) {

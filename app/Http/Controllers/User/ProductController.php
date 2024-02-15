@@ -10,10 +10,11 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function showDetails(Product $product) : \Inertia\Response
+    public function showDetails(Product $product) : Response
     {
         $perPage = 10;
 
@@ -37,7 +38,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function list(Request $request) : \Inertia\Response
+    public function list(Request $request) : Response
     {
         $products = Product::where('published', true)
             ->with('category', 'brand', 'product_images')

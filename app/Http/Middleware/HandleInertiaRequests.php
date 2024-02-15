@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\Cart;
+use App\Helpers\CookieCartHelper;
+use App\Helpers\UserCartHelper;
+use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -48,7 +50,7 @@ class HandleInertiaRequests extends Middleware
                 'warning' =>fn () => $request->session()->get('warning'),
                 'info' =>fn () => $request->session()->get('info'),
             ],
-            'cart' => new CartResource(Cart::getProductsAndCartItems()),
+            'cartItemsCount' => $request->user() ? UserCartHelper::getCount($request->user()): CookieCartHelper::getCount(),
             'canLogin' => app('router')->has('login'),
             'canRegister' => app('router')->has('register'),
             'laravelVersion' => Application::VERSION,

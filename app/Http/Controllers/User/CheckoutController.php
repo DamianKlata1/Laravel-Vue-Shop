@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Helpers\Cart;
+use App\Helpers\UserCartHelper;
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\UserAddress;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CheckoutController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $user = $request->user();
         $products = $request->products;
@@ -91,12 +93,12 @@ class CheckoutController extends Controller
                     'unit_price' => $cartItem->product->price,
                 ]);
                 $cartItem->delete();
-                $cartItems = Cart::getCookieCartItems();
+                $cartItems = UserCartHelper::getCookieCartItems();
                 foreach ($cartItems as $item) {
                     unset($item);
                 }
                 array_splice($cartItems, 0, count($cartItems));
-                Cart::setCookieCartItems($cartItems);
+                UserCartHelper::setCookieCartItems($cartItems);
             }
             $paymentData = [
                 'order_id' => $order->id,
@@ -113,7 +115,7 @@ class CheckoutController extends Controller
         return Inertia::location($checkout_session->url);
     }
 
-    public function success(Request $request)
+    public function success(Request $request): RedirectResponse
     {
         \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
         $sessionId = $request->get('session_id');
