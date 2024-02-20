@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\CookieCartHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,9 +34,24 @@ class Product extends Model
         'reviews'
     ];
 
-    /**
-     * Get the options for generating the slug.
-     */
+    protected static function booted()
+    {
+        static::updated(function ($product) {
+            // Check if the 'published' attribute has been changed to 0
+            if ($product->wasChanged('published') && $product->published == 0) {
+                CartItem::where('product_id', $product->id)->delete();
+
+                CookieCartHelper::deleteCartItemByProductId($product->id);
+
+                WishlistItem::where('product_id', $product->id)->delete();
+
+            }});
+        static::deleting(function ($product) {
+            CookieCartHelper::deleteCartItemByProductId($product->id);
+        });
+    }
+
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -67,10 +83,12 @@ class Product extends Model
     {
         return $this->hasMany(WishlistItem::class);
     }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }
+
     public function calculateRating(): float
     {
         return $this->reviews()->avg('rating') ? $this->reviews()->avg('rating') : 0;

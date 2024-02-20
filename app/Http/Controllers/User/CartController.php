@@ -60,19 +60,28 @@ class CartController extends Controller
 
     public function store(Request $request, Product $product): RedirectResponse
     {
-
-        $quantity = $request->post('quantity', 1);
+        $requestedQuantity = $request->post('quantity', 1);
+        if($requestedQuantity < 1) {
+            return redirect()->back()->with('error', 'Quantity must be at least 1!');
+        }
+        if($product->quantity < $requestedQuantity) {
+            return redirect()->back()->with('error', 'Not enough stock!');
+        }
+        if($product->published === 0) {
+            return redirect()->back()->with('error', 'Product is not available!');
+        }
         $user = $request->user();
+
 
         if ($user) {
             $cartItem = CartItem::where(['user_id' => $user->id, 'product_id' => $product->id])->first();
             if ($cartItem) {
-                $cartItem->update(['quantity' => $cartItem->quantity + $quantity]);
+                $cartItem->update(['quantity' => $cartItem->quantity + $requestedQuantity]);
             } else {
                 CartItem::create([
                     'user_id' => $user->id,
                     'product_id' => $product->id,
-                    'quantity' => $quantity,
+                    'quantity' => $requestedQuantity,
                 ]);
             }
         } else {
@@ -80,7 +89,7 @@ class CartController extends Controller
             $productExists = false;
             foreach ($cartItems as &$cartItem) {
                 if ($cartItem['product_id'] === $product->id) {
-                    $cartItem['quantity'] += $quantity;
+                    $cartItem['quantity'] += $requestedQuantity;
                     $productExists = true;
                     break;
                 }
@@ -89,7 +98,7 @@ class CartController extends Controller
                 $cartItems[] = [
                     'user_id' => null,
                     'product_id' => $product->id,
-                    'quantity' => $quantity,
+                    'quantity' => $requestedQuantity,
                     'price' => $product->price,
                 ];
             }
@@ -101,19 +110,28 @@ class CartController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
-        $quantity = $request->integer('quantity', 1);
+        $requestedQuantity = $request->integer('quantity', 1);
+        if($requestedQuantity < 1) {
+            return redirect()->back()->with('error', 'Quantity must be at least 1!');
+        }
+        if($product->quantity < $requestedQuantity) {
+            return redirect()->back()->with('error', 'Not enough stock!');
+        }
+        if($product->published === 0) {
+            return redirect()->back()->with('error', 'Product is not available!');
+        }
         $user = $request->user();
 
         if ($user) {
             $cartItem = CartItem::where(['user_id' => $user->id, 'product_id' => $product->id])->first();
             if ($cartItem) {
-                $cartItem->update(['quantity' => $quantity]);
+                $cartItem->update(['quantity' => $requestedQuantity]);
             }
         } else {
             $cartItems = CookieCartHelper::getCartItems();
             foreach ($cartItems as &$cartItem) {
                 if ($cartItem['product_id'] === $product->id) {
-                    $cartItem['quantity'] = $quantity;
+                    $cartItem['quantity'] = $requestedQuantity;
                     break;
                 }
             }
@@ -141,7 +159,7 @@ class CartController extends Controller
                 }
             }
             CookieCartHelper::setCartItems($cartItems);
-            if (CartItem::count() <= 0) {
+            if (count($cartItems) <= 0){
                 return redirect()->route('user.home')->with('info', 'Your cart is empty!');
             } else {
                 return redirect()->back()->with('success', 'Item has been removed!');

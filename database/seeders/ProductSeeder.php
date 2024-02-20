@@ -17,6 +17,7 @@ class ProductSeeder extends Seeder
             'title' => 'Product 1',
             'price' => 100.10,
             'quantity' => 10,
+            'published' => true,
             'category_id' => 1,
             'brand_id' => 1,
             'description' => 'Product 1 description'
