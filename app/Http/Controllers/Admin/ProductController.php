@@ -28,8 +28,13 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $product = Product::create($request->only([
-            'title', 'price', 'quantity', 'description', 'category_id', 'brand_id'
+        $product = Product::create($request->validate([
+            'title' => 'required',
+            'price' => 'required',
+            'quantity' => 'required',
+            'description' => 'required',
+            'category_id' => 'required',
+            'brand_id' => 'required',
         ]));
 
         // Handle product images
@@ -57,17 +62,15 @@ class ProductController extends Controller
         if ($request->hasFile('product_images')) {
             $productImages = $request->file('product_images');
             foreach ($productImages as $productImage) {
-                $uniqueFileName = time() . '-' . uniqid() . '.' . $productImage->getClientOriginalExtension();
+                //$uniqueFileName = time() . '-' . uniqid() . '.' . $productImage->getClientOriginalExtension();
+                $uniqueFileName = $productImage->name;
                 $productImage->move('product_images', $uniqueFileName);
-
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image' => 'product_images/' . $uniqueFileName
                 ]);
             }
         }
-
-
         $product->save();
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');

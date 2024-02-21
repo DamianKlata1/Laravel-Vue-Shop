@@ -29,6 +29,7 @@ class UserCartHelper
     {
         $userCartItems = CartItem::where(['user_id' => $user->id])?->get()->keyBy('product_id');
         $savedCartItems = [];
+
         foreach (CookieCartHelper::getCartItems() as $cartItem) {
             if (isset($userCartItems[$cartItem['product_id']])) {
 //               $userCartItems[$cartItem['product_id']]->update(['quantity' => $cartItem['quantity']]);
@@ -39,6 +40,7 @@ class UserCartHelper
                 'product_id' => $cartItem['product_id'],
                 'quantity' => $cartItem['quantity']
             ];
+
         }
         if (!empty($savedCartItems)) {
             CartItem::insert($savedCartItems);

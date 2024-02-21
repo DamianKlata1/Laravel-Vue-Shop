@@ -73,13 +73,14 @@ Route::middleware('trackVisitor')->group(function () {
 |--------------------------------------------------------------------------
 
 */
-Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function() {
+Route::group(['prefix' => 'admin'], function() {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['admin'])->prefix('admin')->group(function () {
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     //products routes

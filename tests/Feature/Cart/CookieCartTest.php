@@ -108,7 +108,5 @@ class CookieCartTest extends TestCase
 
         $response->assertRedirect('/');
     }
-
-
 }
 

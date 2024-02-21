@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserAddress extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'user_id',
         'address',

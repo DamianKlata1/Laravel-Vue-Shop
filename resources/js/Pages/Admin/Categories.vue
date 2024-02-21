@@ -154,7 +154,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="category in categories" :key="category.id" class="border-b dark:border-gray-700">
+                            <tr v-for="category in categories.data" :key="category.id" class="border-b dark:border-gray-700">
                                 <th scope="row"
                                     class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ category.name }}

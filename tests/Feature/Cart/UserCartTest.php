@@ -115,4 +115,21 @@ class UserCartTest extends TestCase
 
         $response->assertRedirect('/');
     }
+    public function test_cookie_cart_items_are_saved_to_database_when_user_logs_in(): void
+    {
+        $product = Product::factory()->create();
+
+        $response = $this->post('/cart/store/' . $product->id);
+        $cartItems = $response->getCookie('cart_items')->getValue();
+        $this->withCookies(['cart_items' => $cartItems])->post('/login', [
+            'email' => $this->user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertDatabaseHas('cart_items', [
+            'user_id' => $this->user->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+    }
 }

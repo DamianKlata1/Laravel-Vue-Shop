@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['total_price', 'user_address_id', 'address_id', 'status', 'session_id', 'created_by', 'updated_by'];
+    protected $fillable = ['price', 'user_address_id', 'address_id', 'status', 'session_id', 'created_by', 'updated_by'];
 
     function orderItems(): HasMany
     {
@@ -20,6 +20,14 @@ class Order extends Model
     function created_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+    function updated_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+    function userAddress(): BelongsTo
+    {
+        return $this->belongsTo(UserAddress::class, 'user_address_id');
     }
     function scopeFiltered(Builder $query): void
     {
