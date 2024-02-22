@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminProductTest extends TestCase
@@ -40,7 +41,7 @@ class AdminProductTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/products');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Product/index')
             ->has('products.data', Product::count()));
     }

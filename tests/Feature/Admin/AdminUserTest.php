@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminUserTest extends TestCase
@@ -38,7 +39,7 @@ class AdminUserTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/users');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Users')
             ->has('users.data', User::count()));
     }

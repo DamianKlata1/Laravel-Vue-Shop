@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminBrandTest extends TestCase
@@ -36,7 +37,7 @@ class AdminBrandTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/brands');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Brands')
             ->has('brands.data', Brand::count()));
     }

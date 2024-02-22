@@ -25,8 +25,7 @@ class CartController extends Controller
         $userAddress = null;
         $total = 0;
         if ($user) {
-            $cartItems = CartItem::where('user_id', $user->id)->with('product.product_images')->get();
-            $userAddress = UserAddress::where('user_id', $user->id)->where('isMain', true)->first();
+            $cartItems = CartItem::where('user_id', $user->id)->with('product.product_images')->get();$userAddress = UserAddress::where('user_id', $user->id)->where('isMain', true)->first();
             if ($cartItems->count() > 0) {
                 $cartItemsCollection = CartItemResource::collection($cartItems);
                 $total = $cartItems->reduce(fn(?float $carry, CartItem $cartItem) => $carry + $cartItem->product->price * $cartItem->quantity);
@@ -44,7 +43,7 @@ class CartController extends Controller
                     ];
                 });
                 $cartItemsCollection = CartItemResource::collection($formattedCartItems);
-                $total = collect($cookieCartItems)->reduce(fn(?float $carry, $cartItem) => $carry + $cartItem['price'] * $cartItem['quantity']);
+                $total = $formattedCartItems->reduce(fn(?float $carry, $cartItem) => $carry + Product::find($cartItem['product_id'])->price * $cartItem['quantity']);
             } else {
                 return redirect()->route('user.home')->with('info', 'Your cart is empty!');
             }
@@ -99,7 +98,6 @@ class CartController extends Controller
                     'user_id' => null,
                     'product_id' => $product->id,
                     'quantity' => $requestedQuantity,
-                    'price' => $product->price,
                 ];
             }
             CookieCartHelper::setCartItems($cartItems);

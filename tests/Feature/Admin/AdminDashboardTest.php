@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Visitor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminDashboardTest extends TestCase
@@ -41,7 +42,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->has('orders.data', 2));
     }
@@ -52,7 +53,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->where('totalIncome', Order::sum('price')));
     }
@@ -62,7 +63,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->where('transactionAmount', Order::count()));
     }
@@ -73,7 +74,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->where('usersAmount', User::count()));
     }
@@ -84,7 +85,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->where('uniqueVisitorsAmount', Visitor::count()));
     }
@@ -95,7 +96,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard?search='. $orders[0]->id);
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->has('orders.data', 1));
     }
@@ -106,7 +107,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->has('orders.data', 5));
     }
@@ -117,7 +118,7 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Dashboard')
             ->where('orders.data.0.id', $orders[9]->id));
     }

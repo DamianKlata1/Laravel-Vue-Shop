@@ -4,6 +4,7 @@ namespace HomePage;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class HomePageTest extends TestCase
@@ -24,7 +25,7 @@ class HomePageTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertInertia(fn ($assert) => $assert
+        $response->assertInertia(fn (Assert $assert) => $assert
             ->component('User/UserHome')
             ->has('products')
         );

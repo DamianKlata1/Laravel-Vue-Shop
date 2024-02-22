@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Cart;
 
+use App\Helpers\CookieCartHelper;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class CookieCartTest extends TestCase
@@ -23,7 +25,6 @@ class CookieCartTest extends TestCase
                 'user_id' => null,
                 'product_id' => $product->id,
                 'quantity' => 1,
-                'price' => $product->price,
             ],
         ]));
     }
@@ -42,7 +43,6 @@ class CookieCartTest extends TestCase
                 'user_id' => null,
                 'product_id' => $product->id,
                 'quantity' => 2,
-                'price' => $product->price,
             ],
         ]));
     }
@@ -60,7 +60,6 @@ class CookieCartTest extends TestCase
                 'user_id' => null,
                 'product_id' => $product->id,
                 'quantity' => 3,
-                'price' => $product->price,
             ],
         ]));
     }
@@ -100,13 +99,33 @@ class CookieCartTest extends TestCase
 
     public function test_guest_is_redirected_to_home_page_after_cookie_cart_is_empty()
     {
-        $product = Product::factory()->create();
-
-        $this->post('/cart/store/' . $product->id);
-        $this->delete('/cart/delete/' . $product->id);
         $response = $this->get('/cart/view');
 
         $response->assertRedirect('/');
+    }
+    public function test_total_price_is_calculated_correctly_on_cart_view()
+    {
+        $product1 = Product::factory()->create(['price' => 100]);
+        $product2 = Product::factory()->create(['price' => 50]);
+        $cartItems = json_encode([
+            [
+                'user_id' => null,
+                'product_id' => $product1->id,
+                'quantity' => 2,
+            ],
+            [
+                'user_id' => null,
+                'product_id' => $product2->id,
+                'quantity' => 1,
+            ],
+        ]);
+
+        $response = $this->withCookies(['cart_items' => $cartItems])->get('/cart/view');
+
+        $response->assertInertia(fn(Assert $assert) => $assert
+            ->component('User/CartList')
+            ->where('total', 250)
+        );
     }
 }
 

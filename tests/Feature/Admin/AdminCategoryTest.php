@@ -6,6 +6,7 @@ use App\Models\category;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminCategoryTest extends TestCase
@@ -36,7 +37,7 @@ class AdminCategoryTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('/admin/categories');
 
-        $response->assertInertia(fn($assert) => $assert
+        $response->assertInertia(fn(Assert $assert) => $assert
             ->component('Admin/Categories')
             ->has('categories.data', Category::count()));
     }
