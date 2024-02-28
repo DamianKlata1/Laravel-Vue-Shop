@@ -25,7 +25,8 @@ class CartController extends Controller
         $userAddress = null;
         $total = 0;
         if ($user) {
-            $cartItems = CartItem::where('user_id', $user->id)->with('product.product_images')->get();$userAddress = UserAddress::where('user_id', $user->id)->where('isMain', true)->first();
+            $cartItems = CartItem::where('user_id', $user->id)->with('product.product_images')->get();
+            $userAddress = UserAddress::where('user_id', $user->id)->where('isMain', true)->first();
             if ($cartItems->count() > 0) {
                 $cartItemsCollection = CartItemResource::collection($cartItems);
                 $total = $cartItems->reduce(fn(?float $carry, CartItem $cartItem) => $carry + $cartItem->product->price * $cartItem->quantity);
@@ -51,12 +52,11 @@ class CartController extends Controller
         return Inertia::render('User/CartList', [
                 'cartItems' => $cartItemsCollection,
                 'userAddress' => $userAddress,
-                'total' => $total,
+                'total' => round($total,2),
             ]
         );
 
     }
-
     public function store(Request $request, Product $product): RedirectResponse
     {
         $requestedQuantity = $request->post('quantity', 1);
@@ -122,9 +122,7 @@ class CartController extends Controller
 
         if ($user) {
             $cartItem = CartItem::where(['user_id' => $user->id, 'product_id' => $product->id])->first();
-            if ($cartItem) {
-                $cartItem->update(['quantity' => $requestedQuantity]);
-            }
+            $cartItem?->update(['quantity' => $requestedQuantity]);
         } else {
             $cartItems = CookieCartHelper::getCartItems();
             foreach ($cartItems as &$cartItem) {

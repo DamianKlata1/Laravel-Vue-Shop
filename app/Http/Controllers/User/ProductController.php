@@ -26,7 +26,7 @@ class ProductController extends Controller
             ->loadCount('wishlistItems');
 
         $reviews = $product->reviews()
-            ->with('user')
+            ->with(['user', 'helpfulUsers'])
             ->withCount('helpfulUsers')
             ->paginate($perPage)
             ->withQueryString();

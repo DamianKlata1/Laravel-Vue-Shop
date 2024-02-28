@@ -5,6 +5,7 @@ namespace Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\UserAddress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -19,7 +20,6 @@ class UserCartTest extends TestCase
         parent::setUp();
         $this->user = User::factory()->create();
     }
-
     public function test_product_can_be_added_to_user_cart(): void
     {
         $product = Product::factory()->create();
@@ -32,7 +32,6 @@ class UserCartTest extends TestCase
             'quantity' => 1,
         ]);
     }
-
     public function test_product_quantity_is_increased_when_product_is_added_to_cart_twice(): void
     {
         $product = Product::factory()->create();
@@ -50,7 +49,6 @@ class UserCartTest extends TestCase
             'quantity' => 2,
         ]);
     }
-
     public function test_product_quantity_is_updated_when_product_is_updated_in_cart(): void
     {
         $product = Product::factory()->create();
@@ -67,7 +65,6 @@ class UserCartTest extends TestCase
             'quantity' => 3,
         ]);
     }
-
     public function test_cart_item_is_deleted_when_product_is_deleted_from_user_cart(): void
     {
         $product = Product::factory()->create();
@@ -147,7 +144,6 @@ class UserCartTest extends TestCase
             'quantity' => 1,
         ]);
     }
-
     public function test_total_price_is_calculated_correctly(): void
     {
         $product1 = Product::factory()->create([
@@ -173,6 +169,36 @@ class UserCartTest extends TestCase
         $response->assertInertia(fn(Assert $page) => $page
             ->component('User/CartList')
             ->where('total', 250)
+        );
+    }
+    public function test_user_address_is_retrieved_from_database(): void
+    {
+        $userAddress = UserAddress::factory()->create([
+            'user_id' => $this->user->id,
+            'isMain' => 1,
+        ]);
+        $cartItem = CartItem::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->get('/cart/view');
+
+        $response->assertInertia(fn(Assert $page) => $page
+            ->component('User/CartList')
+            ->where('userAddress', $userAddress)
+        );
+    }
+    public function test_theres_no_user_address_when_user_has_no_address(): void
+    {
+        $cartItem = CartItem::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->get('/cart/view');
+
+        $response->assertInertia(fn(Assert $page) => $page
+            ->component('User/CartList')
+            ->where('userAddress', null)
         );
     }
 }

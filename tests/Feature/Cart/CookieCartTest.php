@@ -127,5 +127,23 @@ class CookieCartTest extends TestCase
             ->where('total', 250)
         );
     }
+    public function test_theres_no_user_address_when_user_is_not_logged_in()
+    {
+        $product = Product::factory()->create();
+        $cartItems = json_encode([
+            [
+                'user_id' => null,
+                'product_id' => $product->id,
+                'quantity' => 1,
+            ],
+        ]);
+
+        $response = $this->withCookies(['cart_items' => $cartItems])->get('/cart/view');
+
+        $response->assertInertia(fn(Assert $assert) => $assert
+            ->component('User/CartList')
+            ->where('userAddress', null)
+        );
+    }
 }
 

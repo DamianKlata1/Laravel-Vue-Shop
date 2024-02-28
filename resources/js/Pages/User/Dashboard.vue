@@ -1,7 +1,8 @@
 <template>
     <UserLayout>
 
-        <h1 class="text-5xl font-extrabold tracking-tight text-gray-900  items-center max-w-screen-xl mx-auto mt-10">Your Orders</h1>
+        <h1 class="text-5xl font-extrabold tracking-tight text-gray-900  items-center max-w-screen-xl mx-auto mt-10">
+            Your Orders</h1>
         <div v-if="orders.length>0" class="relative overflow-x-auto max-w-screen-xl py-12 mx-auto">
             <table v-show="order.order_items.length>0" v-for="order in orders" :key="order.id"
                    class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-5">
@@ -24,8 +25,13 @@
                     <td class="px-6 py-4">
                         Quantity
                     </td>
+                    <td class="px-6 py-4"
+                        :class="{'text-green-500': order.status === 'paid',
+                                'text-red-500': order.status === 'unpaid' || order.status === 'cancelled' }">
+                        Status: {{ order.status }}
+                    </td>
                     <td class="px-6 py-4">
-                        {{formatDate(order.created_at)}}
+                        {{ formatDate(order.created_at) }}
                     </td>
                 </tr>
 

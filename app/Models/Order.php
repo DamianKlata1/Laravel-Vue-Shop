@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['price', 'user_address_id', 'address_id', 'status', 'session_id', 'created_by', 'updated_by'];
 
+    protected $fillable = ['price', 'user_address_id', 'address_id', 'status', 'session_id', 'created_by', 'updated_by'];
     function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);

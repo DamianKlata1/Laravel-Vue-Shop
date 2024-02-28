@@ -95,7 +95,7 @@
                 </div>
                 <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
                     <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Summary</h2>
-                    <p class="leading-relaxed mb-5 text-gray-600">Total : ${{ total }}</p>
+                    <p class="leading-relaxed mb-5 text-gray-600">Total : ${{ total.toFixed(2) }}</p>
                     <div v-if="userAddress">
                         <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Shipping address</h2>
                         <p class="leading-relaxed mb-5 text-gray-600">{{ userAddress.address1 }}, {{
@@ -177,7 +177,7 @@ const cartItems = computed(() => {
 }
 )
 
-
+console.log(usePage().props.cartItems.data)
 
 const getCartItemIndexByProductId = (id) => {
     return cartItems.data.findIndex(item => item.product_id === id)
@@ -213,9 +213,8 @@ const formFilled = computed(() => {
 const submit = async () => {
     try {
         await router.post(route('checkout.store'), {
-            cartItems: usePage().props.cart.data.items,
-            products: usePage().props.cart.data.products,
-            total: usePage().props.cart.data.total,
+            cartItems: usePage().props.cartItems.data,
+            total: usePage().props.total,
             address: addressForm
         })
 

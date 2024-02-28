@@ -21,6 +21,7 @@ class UserAddressFactory extends Factory
             'user_id' => User::factory(),
             'type' => $this->faker->randomElement(['home', 'office', 'other']),
             'address1' => $this->faker->address(),
+            'address2' => $this->faker->address(),
             'city' => $this->faker->city(),
             'state' => 'asdasd',
             'countryCode' => $this->faker->countryCode,
