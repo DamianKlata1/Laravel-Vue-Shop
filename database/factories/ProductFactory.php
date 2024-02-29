@@ -21,7 +21,7 @@ class ProductFactory extends Factory
             'description' => $this->faker->text(),
             'published' => true,
             'inStock' => true,
-            'price' => $this->faker->randomFloat(2),
+            'price' => $this->faker->randomFloat(2, 1, 1000),
             'created_by' => 1,
             'updated_by' => 1,
             'deleted_at' => Carbon::now(),

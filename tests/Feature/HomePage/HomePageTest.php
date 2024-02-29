@@ -2,6 +2,7 @@
 
 namespace HomePage;
 
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -28,6 +29,17 @@ class HomePageTest extends TestCase
         $response->assertInertia(fn (Assert $assert) => $assert
             ->component('User/UserHome')
             ->has('products')
+        );
+    }
+    public function test_home_page_show_only_8_products(): void
+    {
+        $products = Product::factory()->count(10)->create();
+
+        $response = $this->get('/');
+
+        $response->assertInertia(fn (Assert $assert) => $assert
+            ->component('User/UserHome')
+            ->has('products.data', 8)
         );
     }
 

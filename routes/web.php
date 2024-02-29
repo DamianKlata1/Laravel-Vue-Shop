@@ -1,23 +1,20 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\User\ProductController as UserProductController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\DashboardController;
-use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ProductController as UserProductController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\User\WishlistController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AdminAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,16 +34,19 @@ Route::middleware('trackVisitor')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
         Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
             Route::post('/order', 'store')->name('checkout.store');
             Route::get('/success', 'success')->name('checkout.success');
             Route::post('/cancel', 'cancel')->name('checkout.cancel');
         });
+
         Route::prefix('wishlist')->controller(WishlistController::class)->group(function () {
             Route::get('/view', 'view')->name('wishlist.view');
             Route::post('/store/{product}', 'store')->name('wishlist.store');
             Route::delete('/delete/{wishlistItem}', 'delete')->name('wishlist.delete');
         });
+
         Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('review.store');
         Route::post('/reviews/{review}/helpful-toggle', [ReviewController::class, 'toggleMarkAsHelpful'])->name('review.helpful');
         Route::delete('/reviews/{review}/delete', [ReviewController::class, 'destroy'])->name('review.delete');

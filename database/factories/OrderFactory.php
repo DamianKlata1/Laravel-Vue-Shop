@@ -23,7 +23,7 @@ class OrderFactory extends Factory
         return [
             'price' => $this->faker->randomFloat(2, 0, 1000),
             'user_address_id' => UserAddress::factory(),
-            'status' => $this->faker->randomElement(['pending', 'processing', 'completed', 'declined']),
+            'status' => $this->faker->randomElement(['pending', 'processing', 'paid', 'cancelled']),
             'session_id' => $this->faker->uuid(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),

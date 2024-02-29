@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +16,9 @@ class ReviewController extends Controller
      */
     public function store(Request $request, Product $product): RedirectResponse
     {
+        if(!Auth::check()) {
+            return redirect()->back()->with('error', 'You must be logged in to add a review!');
+        }
         try {
             $request->validate([
                 'rating' => 'required|integer|min:1|max:5',
@@ -38,6 +42,9 @@ class ReviewController extends Controller
     public function toggleMarkAsHelpful(Review $review): RedirectResponse
     {
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'You must be logged in to mark a review as helpful!');
+        }
 
         //if the review is owned by the user, don't allow to mark as helpful
         if ($review->user_id == $user->id) {
@@ -63,6 +70,12 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review): RedirectResponse
     {
+        if(!Auth::check()) {
+            return redirect()->back()->with('error', 'You must be logged in to delete a review!');
+        }
+        if($review->user_id != Auth::id()) {
+            return redirect()->back()->with('error', 'You can only delete your own reviews!');
+        }
         $review->delete();
         return redirect()->back()->with('success', 'Review deleted successfully');
     }
