@@ -37,6 +37,9 @@ class WishlistController extends Controller
 
     public function delete(WishlistItem $wishlistItem): RedirectResponse
     {
+        if($wishlistItem->user_id != auth()->user()->id) {
+            return redirect()->back()->with('error', 'You cannot delete this item!');
+        }
         $wishlistItem->delete();
         return redirect()->back()->with('success', 'Product removed from wishlist!');
     }
