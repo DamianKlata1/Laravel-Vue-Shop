@@ -31,11 +31,21 @@ class CheckoutController extends Controller
     {
         $user = $request->user();
         $cartItems = $request->cartItems;
-        $newAddress = $request->address;
+        try {
+            $newAddress = $request->validate([
+                'address.type' => 'required|string|max:45',
+                'address.address' => 'required|string',
+                'address.city' => 'required|string',
+                'address.state' => 'required|string',
+                'address.zipcode' => 'required|string',
+                'address.country_code' => 'required|string|size:3',
+            ]);
+        }catch (\Exception $e) {
+            return redirect()->to((route('cart.view')))->with('error', 'Invalid address'. $e->getMessage());
+        }
         $total = $request->total;
 
-
-        return $this->checkoutService->processCheckout($user, $cartItems, $newAddress, $total);
+        return $this->checkoutService->processCheckout($user, $cartItems, $newAddress['address'], $total);
     }
 
     public function success(Request $request): RedirectResponse

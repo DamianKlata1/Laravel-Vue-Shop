@@ -160,6 +160,7 @@ import UserLayout from "./Layouts/UserLayout.vue";
 import {computed, reactive} from "vue";
 import {router, usePage} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import {displayAllNotifications} from "@/Helpers/notification.js";
 
 defineProps({
     userAddress: Object,
@@ -216,6 +217,8 @@ const submit = async () => {
             cartItems: usePage().props.cartItems.data,
             total: usePage().props.total,
             address: addressForm
+        },{
+            onSuccess: page => displayAllNotifications(page)
         })
 
     } catch (e) {
