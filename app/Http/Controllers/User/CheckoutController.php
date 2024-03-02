@@ -31,44 +31,31 @@ class CheckoutController extends Controller
     {
         $user = $request->user();
         $cartItems = $request->cartItems;
-        try {
-            $newAddress = $request->validate([
-                'address.type' => 'required|string|max:45',
-                'address.address' => 'required|string',
-                'address.city' => 'required|string',
-                'address.state' => 'required|string',
-                'address.zipcode' => 'required|string',
-                'address.country_code' => 'required|string|size:3',
-            ]);
-        }catch (\Exception $e) {
-            return redirect()->to((route('cart.view')))->with('error', 'Invalid address'. $e->getMessage());
+        $newAddress = null;
+        if ($request->has('address')) {
+            try {
+                $validatedAddress = $request->validate([
+                    'address.type' => 'required|string|max:45',
+                    'address.address' => 'required|string',
+                    'address.city' => 'required|string',
+                    'address.state' => 'required|string',
+                    'address.zipcode' => 'required|string',
+                    'address.country_code' => 'required|string|size:3',
+                ]);
+                $newAddress = $validatedAddress['address'];
+
+            } catch (\Exception $e) {
+                return redirect()->to((route('cart.view')))->with('error', 'Invalid address' . $e->getMessage());
+            }
         }
         $total = $request->total;
 
-        return $this->checkoutService->processCheckout($user, $cartItems, $newAddress['address'], $total);
+        return $this->checkoutService->processCheckout($user, $cartItems, $newAddress, $total);
     }
 
     public function success(Request $request): RedirectResponse
     {
-        \Stripe\Stripe::setApiKey(env('STRIPE_KEY'));
-        $sessionId = $request->get('session_id');
-        try {
-            $session = \Stripe\Checkout\Session::retrieve($sessionId);
-            if (!$session) {
-                throw new NotFoundHttpException;
-            }
-            $order = Order::where('session_id', $session->id)->first();
-            if (!$order) {
-                throw new NotFoundHttpException();
-            }
-            if ($order->status === 'unpaid') {
-                $order->update(['status' => 'paid']);
-            }
-
-            return redirect()->route('user.dashboard');
-        } catch (\Exception $e) {
-            throw new NotFoundHttpException();
-        }
+        return $this->checkoutService->finalizeCheckout($request);
     }
 
 }

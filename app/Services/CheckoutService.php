@@ -10,7 +10,9 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\UserAddress;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CheckoutService
 {
@@ -29,12 +31,29 @@ class CheckoutService
 
         if ($address) {
             $this->createOrder($user, $address, $total, $checkoutSession);
-        } else {
-            // No address found
-            return Inertia::location($checkoutSession->cancel_url);
         }
-
         return Inertia::location($checkoutSession->url);
+    }
+    public function finalizeCheckout(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $sessionId = $request->get('session_id');
+        try {
+            $session = $this->stripe->checkout->sessions->retrieve($sessionId);
+            if (!$session) {
+                throw new NotFoundHttpException;
+            }
+            $order = Order::where('session_id', $session->id)->first();
+            if (!$order) {
+                throw new NotFoundHttpException();
+            }
+            if ($order->status === 'unpaid') {
+                $order->update(['status' => 'paid']);
+            }
+
+            return redirect()->route('user.dashboard');
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException();
+        }
     }
 
     private function createCheckoutSession(array $lineItems): \Stripe\Checkout\Session
