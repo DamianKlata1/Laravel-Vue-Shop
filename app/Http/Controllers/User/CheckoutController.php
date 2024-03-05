@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Helpers\CookieCartHelper;
 use App\Helpers\UserCartHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckoutRequest;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -27,27 +28,11 @@ class CheckoutController extends Controller
         $this->checkoutService = $checkoutService;
     }
 
-    public function store(Request $request): \Symfony\Component\HttpFoundation\Response
+    public function store(CheckoutRequest $request): \Symfony\Component\HttpFoundation\Response
     {
         $user = $request->user();
         $cartItems = $request->cartItems;
-        $newAddress = null;
-        if ($request->has('address')) {
-            try {
-                $validatedAddress = $request->validate([
-                    'address.type' => 'required|string|max:45',
-                    'address.address' => 'required|string',
-                    'address.city' => 'required|string',
-                    'address.state' => 'required|string',
-                    'address.zipcode' => 'required|string',
-                    'address.country_code' => 'required|string|size:3',
-                ]);
-                $newAddress = $validatedAddress['address'];
-
-            } catch (\Exception $e) {
-                return redirect()->to((route('cart.view')))->with('error', 'Invalid address' . $e->getMessage());
-            }
-        }
+        $newAddress = $request->has('address') ? $request->validated()['address'] : null;
         $total = $request->total;
 
         return $this->checkoutService->processCheckout($user, $cartItems, $newAddress, $total);

@@ -34,6 +34,7 @@ class CheckoutTest extends TestCase
         ]);
         $userAddress = UserAddress::factory()->create([
             'user_id' => $this->user->id,
+            'isMain' => 1,
         ]);
         $cartItemsToPass = CartItem::where('user_id', $this->user->id)->with('product')->get();
 
