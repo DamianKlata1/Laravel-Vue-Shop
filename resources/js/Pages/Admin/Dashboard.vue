@@ -66,10 +66,15 @@
                                 Category
                             </td>
                             <td class="px-6 py-4">
-                                Quantity
+                                Price
                             </td>
                             <td class="px-6 py-4">
-                                Price
+                                Quantity
+                            </td>
+                            <td class="px-6 py-4"
+                                :class="{'text-green-500': order.status === 'paid',
+                                'text-red-500': order.status === 'unpaid' || order.status === 'cancelled' }">
+                                Status: {{ order.status }}
                             </td>
                             <td class="px-6 py-4">
                                 {{formatDate(order.created_at)}}
@@ -93,12 +98,12 @@
                                 {{ order_item.product.category.name }}
                             </td>
                             <td class="px-6 py-4">
+                                ${{ order_item.product.price }}
+                            </td>
+                            <td class="px-6 py-4">
                                 {{ order_item.quantity }}
                             </td>
 
-                            <td class="px-6 py-4">
-                                ${{ order_item.product.price }}
-                            </td>
 
                         </tr>
                         <td class="px-6 py-4">

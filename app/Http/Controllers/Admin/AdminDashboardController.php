@@ -6,28 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Visitor;
+use App\Services\Admin\DashboardService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AdminDashboardController extends Controller
 {
-    //
+    private $dashboardService;
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
     public function index(): Response
     {
-        $usersAmount = User::all()->count();
-        $transactionAmount = Order::all()->count();
-        $orders = Order::with('orderItems.product.brand', 'orderItems.product.category', 'created_by')
-            ->orderBy('id', 'desc');
-        $filteredOrders = $orders->filtered()->paginate(5)->withQueryString();
-        $totalIncome = Order::all()->sum('price');
-        $uniqueVisitorsAmount = Visitor::all()->count();
-        return Inertia::render('Admin/Dashboard', [
-            'usersAmount' => $usersAmount,
-            'orders' => $filteredOrders,
-            'totalIncome' => $totalIncome,
-            'transactionAmount' => $transactionAmount,
-            'uniqueVisitorsAmount' => $uniqueVisitorsAmount,
-        ]);
+        $data = $this->dashboardService->getDataForDashboard();
+
+        return Inertia::render('Admin/Dashboard', $data);
     }
 }

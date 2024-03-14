@@ -49,7 +49,7 @@ class AdminDashboardTest extends TestCase
 
     public function test_total_income_is_calculated_correctly_on_dashboard()
     {
-        $orders = Order::factory(2)->create();
+        $orders = Order::factory(2)->create(['status' => 'paid']);
 
         $response = $this->actingAs($this->admin)->get('/admin/dashboard');
 
