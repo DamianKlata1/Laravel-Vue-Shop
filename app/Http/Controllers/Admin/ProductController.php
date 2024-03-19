@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Services\Admin\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,10 +16,15 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function index(Request $request): Response
+    private ProductService $productService;
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+    public function index(): Response
     {
         return Inertia::render('Admin/Product/index', [
-            'products' => Product::filtered()->with('category', 'brand', 'product_images')->paginate(10)->withQueryString(),
+            'products' => $this->productService->getProducts(),
             'brands' => Brand::all(),
             'categories' => Category::all(),
             'brandProductCounts' => Brand::getBrandProductCounts(),
@@ -26,74 +33,37 @@ class ProductController extends Controller
     }
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(ProductRequest $request): RedirectResponse
     {
-        $product = Product::create($request->validate([
-            'title' => 'required',
-            'price' => 'required',
-            'quantity' => 'required',
-            'description' => 'required',
-            'category_id' => 'required',
-            'brand_id' => 'required',
-        ]));
+        $this->productService->createProductFromRequest($request);
 
-        // Handle product images
-        if ($request->hasFile('product_images')) {
-            foreach ($request->file('product_images') as $productImage) {
-                $path = $productImage->store('product_images', 'public');
-
-                $product->product_images()->create([
-                    'image' => $path
-                ]);
-            }
-        }
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
     }
 
-    public function update($id, Request $request): RedirectResponse
+    public function update(int $productId, ProductRequest $request): RedirectResponse
     {
-        $product = Product::find($id);
-        $product->title = $request->title;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-        $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->brand_id = $request->brand_id;
-        if ($request->hasFile('product_images')) {
-            $productImages = $request->file('product_images');
-            foreach ($productImages as $productImage) {
-                //$uniqueFileName = time() . '-' . uniqid() . '.' . $productImage->getClientOriginalExtension();
-                $uniqueFileName = $productImage->name;
-                $productImage->move('product_images', $uniqueFileName);
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => 'product_images/' . $uniqueFileName
-                ]);
-            }
-        }
-        $product->save();
+        $this->productService->updateProductFromRequest($productId, $request);
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
 
     }
-    public function publish($id): RedirectResponse
+    public function publish(int $productId): RedirectResponse
     {
-        $product = Product::find($id);
-        $product->published = !$product->published;
-        $product->save();
+        $this->productService->publishProduct($productId);
+
         return redirect()->route('admin.products.index')->with('success', 'Product published successfully');
     }
-    public function delete($id): RedirectResponse
+    public function delete(int $productId): RedirectResponse
     {
-        $product = Product::find($id);
-        $product->delete();
+        $this->productService->deleteProduct($productId);
+
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
     }
 
-    public function imageDelete($id): RedirectResponse
+    public function imageDelete(int $productImageId): RedirectResponse
     {
-        $productImage = ProductImage::find($id);
-        $productImage->delete();
+        $this->productService->deleteProductImage($productImageId);
+
         return redirect()->route('admin.products.index')->with('success', 'Product image deleted successfully');
     }
 }

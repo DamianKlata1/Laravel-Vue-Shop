@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -49,6 +50,7 @@ class AdminUserTest extends TestCase
         $user = User::factory()->make()->toArray();
         $user['password'] = 'password';
         $user['password_confirmation'] = 'password';
+        $user['isAdmin'] = true;
         $response = $this->actingAs($this->admin)->post('/admin/users/store', $user);
         $response->assertRedirect('/admin/users');
         $this->assertDatabaseHas('users', ['email' => $user['email']]);
@@ -59,6 +61,7 @@ class AdminUserTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($this->admin)->put("/admin/users/update/{$user->id}", [
+            'id' => $user->id,
             'name' => 'John Doe',
             'email' => $user->email,
             'isAdmin' => 1
@@ -77,5 +80,16 @@ class AdminUserTest extends TestCase
         $response->assertRedirect('/admin/users');
         $this->assertDatabaseMissing('users', ['email' => $user->email]);
     }
+    public function test_user_password_can_be_updated()
+    {
+        $user = User::factory()->create();
 
+        $response = $this->actingAs($this->admin)->patch("/admin/users/update-password/{$user->id}", [
+            'password' => 'newpassword',
+            'password_confirmation' => 'newpassword'
+        ]);
+
+        $response->assertRedirect('/admin/users');
+        $this->assertTrue(Hash::check('newpassword', User::find($user->id)->password));
+    }
 }

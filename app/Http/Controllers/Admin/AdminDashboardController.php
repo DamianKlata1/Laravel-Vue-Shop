@@ -13,7 +13,7 @@ use Inertia\Response;
 
 class AdminDashboardController extends Controller
 {
-    private $dashboardService;
+    private DashboardService $dashboardService;
     public function __construct(DashboardService $dashboardService)
     {
         $this->dashboardService = $dashboardService;

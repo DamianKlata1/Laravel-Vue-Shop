@@ -371,6 +371,7 @@ const addUser = async () => {
 }
 const editUser = async () => {
     const formData = new FormData();
+    formData.append('id', id.value);
     formData.append('name', name.value);
     formData.append('email', email.value);
     formData.append('isAdmin', isAdmin.value);

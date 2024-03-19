@@ -3,93 +3,57 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Admin\PasswordUpdateRequest;
+use App\Http\Requests\Admin\UserAddRequest;
+use App\Http\Requests\Admin\UserUpdateRequest;
+use App\Http\Requests\UserRequest;
+use App\Services\Admin\UserService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
-use Illuminate\Validation\Rules;
 use Inertia\Response;
 
 
 class AdminUserController extends Controller
 {
+    private UserService $userService;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
     public function index(): Response
     {
-        $users = User::filtered()->paginate(10)->withQueryString();
+        $users = $this->userService->getUsers();
+
         return Inertia::render('Admin/Users', [
             'users' => $users
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(UserAddRequest $request): RedirectResponse
     {
-        $request->merge(['isAdmin' => $request->isAdmin == 'true']);
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'isAdmin' => 'required|boolean'
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->isAdmin = $request->isAdmin;
-
-        $user->save();
-
+        $this->userService->createUserFromRequest($request);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(int  $userId ,UserUpdateRequest $request): RedirectResponse
     {
-        $request->merge(['isAdmin' => $request->isAdmin == 'true']);
-        try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|lowercase|email|max:255|unique:' . User::class. ',email,' . $id,
-                'isAdmin' => 'required|boolean'
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
+        $this->userService->updateUserFromRequest($userId, $request);
 
-        $user = User::find($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->isAdmin = $request->isAdmin;
-
-
-        $user->save();
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
-    public function delete($id): RedirectResponse
+    public function delete(int $userId): RedirectResponse
     {
-        $user = User::find($id);
-        $user->delete();
+        $this->userService->deleteUser($userId);
+
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 
-    public function updatePassword(Request $request, $id): RedirectResponse
+    public function updatePassword(int $userId, PasswordUpdateRequest $request): RedirectResponse
     {
-        try {
-            $request->validate([
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
+        $this->userService->updatePasswordFromRequest($userId, $request);
 
-        $user = User::find($id);
-        $user->password = Hash::make($request->password);
-        $user->save();
         return redirect()->route('admin.users.index')->with('success', 'Password updated successfully');
     }
 
