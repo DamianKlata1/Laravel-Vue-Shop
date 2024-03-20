@@ -16,10 +16,12 @@ use Inertia\Response;
 class AdminUserController extends Controller
 {
     private UserService $userService;
+
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
     }
+
     public function index(): Response
     {
         $users = $this->userService->getUsers();
@@ -31,28 +33,44 @@ class AdminUserController extends Controller
 
     public function store(UserAddRequest $request): RedirectResponse
     {
-        $this->userService->createUserFromRequest($request);
+        try {
+            $this->userService->createUser($request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')->with('error', 'User could not be created: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
-    public function update(int  $userId ,UserUpdateRequest $request): RedirectResponse
+    public function update(int $userId, UserUpdateRequest $request): RedirectResponse
     {
-        $this->userService->updateUserFromRequest($userId, $request);
+        try {
+            $this->userService->updateUser($userId, $request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')->with('error', 'User could not be updated: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function delete(int $userId): RedirectResponse
     {
-        $this->userService->deleteUser($userId);
+        try {
+            $this->userService->deleteUser($userId);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')->with('error', 'User could not be deleted: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
 
     public function updatePassword(int $userId, PasswordUpdateRequest $request): RedirectResponse
     {
-        $this->userService->updatePasswordFromRequest($userId, $request);
+        try{
+            $this->userService->updatePassword($userId, $request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.index')->with('error', 'Password could not be updated: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'Password updated successfully');
     }

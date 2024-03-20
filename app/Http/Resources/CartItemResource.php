@@ -17,7 +17,7 @@ class CartItemResource extends JsonResource
     {
         if(is_array($this->resource)){
             return [
-                'id' => $this['id'],
+                'id' => $this['user_id'],
                 'product' => new ProductResource(Product::with('product_images')->find($this['product_id'])),
                 'quantity' => $this['quantity'],
             ];

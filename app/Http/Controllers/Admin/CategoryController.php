@@ -28,19 +28,31 @@ class CategoryController extends Controller
     }
     public function store(CategoryRequest $request): RedirectResponse
     {
-        $this->categoryService->createCategoryFromRequest($request);
+        try{
+            $this->categoryService->createCategory($request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.categories.index')->with('error', 'Category could not be created: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully');
     }
     public function update(int $categoryId, CategoryRequest $request): RedirectResponse
     {
-        $this->categoryService->updateCategoryFromRequest($categoryId, $request);
+        try {
+            $this->categoryService->updateCategory($categoryId, $request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.categories.index')->with('error', 'Category could not be updated: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');
     }
     public function delete(int $categoryId): RedirectResponse
     {
-        $this->categoryService->deleteCategory($categoryId);
+        try{
+            $this->categoryService->deleteCategory($categoryId);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.categories.index')->with('error', 'Category could not be deleted: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully');
     }

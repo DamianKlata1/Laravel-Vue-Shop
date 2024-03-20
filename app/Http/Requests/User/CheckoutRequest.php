@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
-use mysql_xdevapi\Session;
 
 class CheckoutRequest extends FormRequest
 {

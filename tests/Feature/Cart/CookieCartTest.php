@@ -145,5 +145,35 @@ class CookieCartTest extends TestCase
             ->where('userAddress', null)
         );
     }
+    public function test_guest_cannot_add_more_products_than_available_in_stock()
+    {
+        $product = Product::factory()->create(['quantity' => 2]);
+        $cartItems = json_encode([
+            [
+                'user_id' => null,
+                'product_id' => $product->id,
+                'quantity' => 2,
+            ],
+        ]);
+
+        $response = $this->withCookies(['cart_items' => $cartItems])->post('/cart/store/' . $product->id, ['quantity' => 3]);
+
+        $response->assertSessionHasErrors('quantity');
+    }
+    public function test_guest_cannot_add_not_published_product_to_cart()
+    {
+        $product = Product::factory()->create(['published' => 0]);
+        $cartItems = json_encode([
+            [
+                'user_id' => null,
+                'product_id' => $product->id,
+                'quantity' => 1,
+            ],
+        ]);
+
+        $response = $this->withCookies(['cart_items' => $cartItems])->post('/cart/store/' . $product->id);
+
+        $response->assertSessionHasErrors('published');
+    }
 }
 

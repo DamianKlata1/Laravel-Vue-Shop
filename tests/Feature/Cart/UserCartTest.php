@@ -201,4 +201,32 @@ class UserCartTest extends TestCase
             ->where('userAddress', null)
         );
     }
+    public function test_user_cannot_add_more_products_than_available_in_stock(): void
+    {
+        $product = Product::factory()->create([
+            'quantity' => 5,
+        ]);
+
+        $response = $this->actingAs($this->user)->post('/cart/store/' . $product->id, ['quantity' => 6]);
+
+        $response->assertSessionHasErrors('quantity');
+        $this->assertDatabaseMissing('cart_items', [
+            'user_id' => $this->user->id,
+            'product_id' => $product->id,
+        ]);
+    }
+    public function test_user_cannot_add_not_published_product_to_cart(): void
+    {
+        $product = Product::factory()->create([
+            'published' => 0,
+        ]);
+
+        $response = $this->actingAs($this->user)->post('/cart/store/' . $product->id);
+
+        $response->assertSessionHasErrors('published');
+        $this->assertDatabaseMissing('cart_items', [
+            'user_id' => $this->user->id,
+            'product_id' => $product->id,
+        ]);
+    }
 }

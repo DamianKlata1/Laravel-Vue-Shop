@@ -15,13 +15,17 @@
                     <label for="floating_title"
                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Title</label>
                 </div>
+                <InputError :message="errors['title']" class="mt-2"/>
+
                 <div class="relative z-0 w-full mb-5 group">
-                    <input v-model="price" type="number" name="floating_price" id="floating_price"
+                    <input v-model="price" type="number" name="floating_price" id="floating_price" step="0.01"
                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                            placeholder=" " required/>
                     <label for="floating_price"
                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Price</label>
                 </div>
+                <InputError :message="errors['price']" class="mt-2"/>
+
                 <div class="relative z-0 w-full mb-5 group">
                     <input v-model="quantity" type="number" name="floating_quantity" id="floating_quantity"
                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -30,6 +34,8 @@
                            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Quantity
                     </label>
                 </div>
+                <InputError :message="errors['quantity']" class="mt-2"/>
+
                 <div>
                     <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select
                         category</label>
@@ -55,6 +61,8 @@
                               class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="Add description here..."></textarea>
                 </div>
+                <InputError :message="errors['description']" class="mt-2"/>
+
                 <div>
                     <label for="message"
                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image</label>
@@ -74,6 +82,7 @@
                         <img w-full :src="dialogImageUrl" alt="Preview Image"/>
                     </el-dialog>
                 </div>
+                <InputError :message="errors['product_images']" class="mt-2"/>
                 <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Submit
@@ -280,11 +289,12 @@
 
 <script setup>
 import {usePage,Link} from "@inertiajs/vue3";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {router} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import {Plus} from '@element-plus/icons-vue'
 import Pagination from "@/Components/Pagination.vue";
+import InputError from "@/Components/InputError.vue";
 
 
 defineProps({
@@ -298,8 +308,14 @@ defineProps({
 const brands = usePage().props.brands
 const categories = usePage().props.categories
 
+const errors = computed(() => {
+    return usePage().props.errors
+})
+
 const selectedBrands = ref([])
 const selectedCategories = ref([])
+
+
 
 watch(selectedBrands, () => {
     updateFilteredProducts()

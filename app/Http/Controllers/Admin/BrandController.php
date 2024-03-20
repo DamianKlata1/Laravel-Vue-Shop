@@ -14,33 +14,50 @@ use Inertia\Response;
 class BrandController extends Controller
 {
     private BrandService $brandService;
+
     public function __construct(BrandService $brandService)
     {
         $this->brandService = $brandService;
     }
+
     public function index(): Response
     {
         $brands = $this->brandService->getBrands();
 
-        return Inertia::render('Admin/Brands',[
+        return Inertia::render('Admin/Brands', [
             'brands' => $brands
         ]);
     }
+
     public function store(BrandRequest $request): RedirectResponse
     {
-        $this->brandService->createBrandFromRequest($request);
+        try {
+            $this->brandService->createBrand($request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.brands.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully');
     }
+
     public function update(int $brandId, BrandRequest $request): RedirectResponse
     {
-        $this->brandService->updateBrandFromRequest($brandId, $request);
+        try {
+            $this->brandService->updateBrand($brandId, $request->validated());
+        } catch (\Exception $e) {
+            return redirect()->route('admin.brands.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully');
     }
+
     public function delete(int $brandId): RedirectResponse
     {
-        $this->brandService->deleteBrand($brandId);
+        try {
+            $this->brandService->deleteBrand($brandId);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.brands.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('admin.brands.index')->with('success', 'Brand deleted successfully');
     }

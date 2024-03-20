@@ -8,7 +8,7 @@ use App\Models\Visitor;
 
 class DashboardService
 {
-    public function getDataForDashboard()
+    public function getDataForDashboard(): array
     {
         $usersAmount = User::count();
         $transactionAmount = Order::count();

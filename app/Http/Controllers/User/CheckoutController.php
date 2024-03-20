@@ -2,22 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Helpers\CookieCartHelper;
-use App\Helpers\UserCartHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CheckoutRequest;
-use App\Models\CartItem;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Payment;
-use App\Models\UserAddress;
+use App\Http\Requests\User\CheckoutRequest;
 use App\Services\CheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CheckoutController extends Controller
 {

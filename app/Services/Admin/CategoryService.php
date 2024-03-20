@@ -13,25 +13,45 @@ class CategoryService
     {
         return Category::paginate(10)->withQueryString();
     }
-    public function createCategoryFromRequest(CategoryRequest $request): void
+
+    /**
+     * @throws \Exception
+     */
+    public function createCategory(array $data): void
     {
-        $category = new Category();
-        $category->name = $request->validated()['name'];
-        $category->save();
+        try{
+            $category = new Category();
+            $category->name = $data['name'];
+            $category->save();
+        } catch (\Exception $e) {
+            throw new \Exception('Category could not be created: ' . $e->getMessage());
+        }
     }
-    public function updateCategoryFromRequest(int $categoryId, CategoryRequest $request): void
+
+    /**
+     * @throws \Exception
+     */
+    public function updateCategory(int $categoryId, array $data): void
     {
-        $category = Category::find($categoryId);
-        $category->name = $request->validated()['name'];
-        $category->save();
+        try{
+            $category = Category::find($categoryId);
+            $category->name = $data['name'];
+            $category->save();
+        } catch (\Exception $e) {
+            throw new \Exception('Category could not be updated: ' . $e->getMessage());
+        }
     }
-    public function deleteCategory(int $categoryId)
+
+    /**
+     * @throws \Exception
+     */
+    public function deleteCategory(int $categoryId): void
     {
         try {
             $category = Category::find($categoryId);
             $category->delete();
         } catch (\Exception $e) {
-            return redirect()->route('admin.categories.index')->with('error', 'Category could not be deleted: ' . $e->getMessage());
+            throw new \Exception('Category could not be deleted: ' . $e->getMessage());
         }
     }
 

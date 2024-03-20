@@ -17,35 +17,62 @@ class UserService
         return User::filtered()->paginate(10)->withQueryString();
     }
 
-    public function createUserFromRequest(UserAddRequest $request): void
+    /**
+     * @throws \Exception
+     */
+    public function createUser(array $data): void
     {
-        $user = new User();
-        $user->name = $request->validated()['name'];
-        $user->email = $request->validated()['email'];
-        $user->password = Hash::make($request->validated()['password']);
-        $user->isAdmin = $request->validated()['isAdmin'];
-        $user->save();
+        try {
+            $user = new User();
+            $user->name = $data['name'];
+            $user->email = $data['email'];
+            $user->password = Hash::make($data['password']);
+            $user->isAdmin = $data['isAdmin'];
+            $user->save();
+        } catch (\Exception $e) {
+            throw new \Exception('User could not be created: ' . $e->getMessage());
+        }
     }
-    public function updateUserFromRequest(int $userId, UserUpdateRequest $request): void
+
+    /**
+     * @throws \Exception
+     */
+    public function updateUser(int $userId, array $data): void
     {
-        $user = User::find($userId);
-        $user->name = $request->validated()['name'];
-        $user->email = $request->validated()['email'];
-        $user->isAdmin = $request->validated()['isAdmin'];
-        $user->save();
+        try {
+            $user = User::find($userId);
+            $user->name = $data['name'];
+            $user->email = $data['email'];
+            $user->isAdmin = $data['isAdmin'];
+            $user->save();
+        } catch (\Exception $e) {
+            throw new \Exception('User could not be updated: ' . $e->getMessage());
+        }
     }
-    public function updatePasswordFromRequest(int $userId, PasswordUpdateRequest $request): void
-    {
-        $user = User::find($userId);
-        $user->password = Hash::make($request->validated()['password']);
-        $user->save();
-    }
-    public function deleteUser(int $userId)
+
+    /**
+     * @throws \Exception
+     */
+    public function updatePassword(int $userId, array $data): void
     {
         try{
+            $user = User::find($userId);
+            $user->password = Hash::make($data['password']);
+            $user->save();
+        } catch (\Exception $e) {
+            throw new \Exception('Password could not be updated: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function deleteUser(int $userId): void
+    {
+        try {
             User::find($userId)->delete();
         } catch (\Exception $e) {
-            return redirect()->route('admin.users.index')->with('error', 'User could not be deleted: '. $e->getMessage());
+            throw new \Exception('User could not be deleted: ' . $e->getMessage());
         }
     }
 
