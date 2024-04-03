@@ -4,32 +4,36 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\CheckoutRequest;
-use App\Services\CheckoutService;
+use App\Services\User\CheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CheckoutController extends Controller
 {
-    private $checkoutService;
+    private CheckoutService $checkoutService;
 
     public function __construct(CheckoutService $checkoutService)
     {
         $this->checkoutService = $checkoutService;
     }
 
-    public function store(CheckoutRequest $request): \Symfony\Component\HttpFoundation\Response
+    public function store(Request $request): \Symfony\Component\HttpFoundation\Response
     {
-        $user = $request->user();
-        $cartItems = $request->cartItems;
-        $newAddress = $request->has('address') ? $request->validated()['address'] : null;
-        $total = $request->total;
+        $checkoutSessionUrl = $this->checkoutService->processCheckout($request->user(), $request->cartItems, $request->total);
 
-        return $this->checkoutService->processCheckout($user, $cartItems, $newAddress, $total);
+        return Inertia::location($checkoutSessionUrl);
     }
 
     public function success(Request $request): RedirectResponse
     {
-        return $this->checkoutService->finalizeCheckout($request);
+        try {
+            $this->checkoutService->finalizeCheckout($request->session_id);
+        } catch (\Exception $e) {
+            return redirect()->route('checkout.cancel')->with('error', 'An error occurred while processing your payment: ' . $e->getMessage());
+        }
+
+        return redirect()->route('user.dashboard');
     }
 
 }

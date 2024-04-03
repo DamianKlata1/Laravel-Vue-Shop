@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileUpdateRequest;
+use App\Http\Requests\User\UpdateAddressRequest;
+use App\Services\User\ProfileService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +16,12 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    private ProfileService $profileService;
+
+    public function __construct(ProfileService $profileService)
+    {
+        $this->profileService = $profileService;
+    }
     /**
      * Display the user's profile form.
      */
@@ -60,5 +68,15 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+    public function updateAddress(UpdateAddressRequest $request): RedirectResponse
+    {
+        try{
+            $this->profileService->updateAddress($request->user(), $request->validated());
+        }
+        catch(\Exception $e){
+            return redirect()->back()->with('error', 'Invalid address data: ' . $e->getMessage());
+        }
+        return redirect()->back()->with('info', 'Address updated.');
     }
 }

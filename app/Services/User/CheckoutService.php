@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\User;
 
 use App\Helpers\CookieCartHelper;
 use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\User;
-use App\Models\Order;
 use App\Models\UserAddress;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -23,36 +22,29 @@ class CheckoutService
         $this->stripe = $stripe;
     }
 
-    public function processCheckout(User $user, array $cartItems, ?array $newAddress, $total): \Symfony\Component\HttpFoundation\Response
+    public function processCheckout(User $user, array $cartItems, $total): string
     {
         $lineItems = $this->getLineItems($cartItems);
         $checkoutSession = $this->createCheckoutSession($lineItems);
-        $address = $this->updateOrGetMainUserAddress($user, $newAddress);
+        $address = $user->user_addresses()->where('isMain', 1)->first();
 
-        if ($address) {
-            $this->createOrder($user, $address, $total, $checkoutSession);
-        }
-        return Inertia::location($checkoutSession->url);
+        $this->createOrder($user, $address, $total, $checkoutSession);
+
+        return $checkoutSession->url;
     }
-    public function finalizeCheckout(Request $request): \Illuminate\Http\RedirectResponse
+    public function finalizeCheckout(string $sessionId): void
     {
-        $sessionId = $request->get('session_id');
         try {
             $session = $this->stripe->checkout->sessions->retrieve($sessionId);
-            if (!$session) {
-                throw new NotFoundHttpException;
-            }
+
             $order = Order::where('session_id', $session->id)->first();
-            if (!$order) {
-                throw new NotFoundHttpException();
-            }
+
             if ($order->status === 'unpaid') {
                 $order->update(['status' => 'paid']);
             }
 
-            return redirect()->route('user.dashboard');
         } catch (\Exception $e) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException('Session not found: ' . $e->getMessage());
         }
     }
 
@@ -66,41 +58,6 @@ class CheckoutService
             'cancel_url' => route('checkout.cancel')
         ]);
     }
-
-    private function updateOrGetMainUserAddress(User $user, ?array $newAddress): ?UserAddress
-    {
-
-        if ($newAddress && $this->validateAddress($newAddress)) {
-            return $this->updateUserAddress($user, $newAddress);
-        }
-
-        return $user->user_addresses()->where('isMain', 1)?->first();
-    }
-
-    private function updateUserAddress(User $user, array $newAddress): UserAddress
-    {
-
-        $existingAddress = $user->user_addresses()->where('isMain', 1)->first();
-        $existingAddress?->update(['isMain' => 0]);
-
-        $newUserAddress = new UserAddress();
-
-        // Set the attributes
-        $newUserAddress->address1 = $newAddress['address'];
-        $newUserAddress->state = $newAddress['state'];
-        $newUserAddress->zipcode = $newAddress['zipcode'];
-        $newUserAddress->city = $newAddress['city'];
-        $newUserAddress->countryCode = $newAddress['country_code'];
-        $newUserAddress->type = $newAddress['type']; // Set the 'type' attribute
-        $newUserAddress->user_id = $user->id;
-        $newUserAddress->isMain = 1;
-
-        // Save the new user address instance
-        $newUserAddress->save();
-
-        return $newUserAddress;
-    }
-
     private function createOrder(User $user, UserAddress $mainAddress, $total, $checkoutSession): void
     {
         $order = new Order();
@@ -163,8 +120,4 @@ class CheckoutService
         return $lineItems;
     }
 
-    private function validateAddress(array $address): bool
-    {
-        return isset($address['address'], $address['state'], $address['zipcode'], $address['city'], $address['country_code'], $address['type']);
-    }
 }

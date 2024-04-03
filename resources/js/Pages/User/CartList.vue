@@ -102,13 +102,19 @@
                                 userAddress.city
                             }},
                             {{ userAddress.state }}, {{ userAddress.zipcode }} </p>
-                        <p class="leading-relaxed mb-5 text-gray-600">or you can add new
-                            below</p>
+                        <p class="leading-relaxed mb-5 text-gray-600">or you can add new <a href="#"
+                                                                                            @click.prevent="addressFormVisibleToggle"
+                                                                                            style="font-size: 1.2em; color: #ff6600;">here</a>
+                        </p>
+                        <button v-if="!addressFormVisible" @click.prevent="submitCheckout"
+                                class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+                            Checkout
+                        </button>
                     </div>
                     <div v-else>
                         <p class="leading-relaxed mb-5 text-gray-600">Add shipping address to continue</p>
                     </div>
-                    <form @submit.prevent="submit">
+                    <form @submit.prevent="submitAddressForm" v-show="addressFormVisible">
                         <div class="relative mb-4">
                             <label for="type" class="leading-7 text-sm text-gray-600">Type</label>
                             <TextInput
@@ -118,14 +124,14 @@
                                 class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
 
                             />
-                            <InputError :message="errors['address.type']" class="mt-2" />
+                            <InputError :message="errors['type']" class="mt-2"/>
 
                         </div>
                         <div class="relative mb-4">
                             <label for="address" class="leading-7 text-sm text-gray-600">Address</label>
                             <input type="text" id="address" v-model="addressForm.address"
                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                            <InputError :message="errors['address.address']" class="mt-2" />
+                            <InputError :message="errors['address']" class="mt-2"/>
 
                         </div>
                         <div class="relative mb-4">
@@ -133,39 +139,36 @@
                             <input type="text" id="city" v-model="addressForm.city"
                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                         </div>
-                            <InputError :message="errors['address.city']" class="mt-2" />
+                        <InputError :message="errors['city']" class="mt-2"/>
 
                         <div class="relative mb-4">
                             <label for="state" class="leading-7 text-sm text-gray-600">State</label>
                             <input type="text" id="state" v-model="addressForm.state"
                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                            <InputError :message="errors['address.state']" class="mt-2" />
+                            <InputError :message="errors['state']" class="mt-2"/>
 
                         </div>
                         <div class="relative mb-4">
                             <label for="zipcode" class="leading-7 text-sm text-gray-600">Zipcode</label>
                             <input type="text" id="zipcode" v-model="addressForm.zipcode"
                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                            <InputError :message="errors['address.zipcode']" class="mt-2" />
+                            <InputError :message="errors['zipcode']" class="mt-2"/>
 
                         </div>
                         <div class="relative mb-4">
                             <label for="country_code" class="leading-7 text-sm text-gray-600">Country Code</label>
                             <input type="text" id="country_code" v-model="addressForm.country_code"
                                    class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                            <InputError :message="errors['address.country_code']" class="mt-2" />
+                            <InputError :message="errors['country_code']" class="mt-2"/>
 
                         </div>
-                        <button v-if="formFilled || userAddress" type="submit"
+                        <button type="submit"
                                 class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-                            Checkout
+                            Add address
                         </button>
-                        <button v-else type="submit"
-                                class="text-white bg-gray-500 border-0 py-2 px-6 focus:outline-none hover:bg-gray-600 rounded text-lg">
-                            Add address to continue
-                        </button>
+
                     </form>
-                    <p class="text-xs text-gray-500 mt-3">Continue shopping</p>
+                    <Link href="/" class="text-xs text-gray-500 mt-3">Continue shopping</Link>
                 </div>
             </div>
         </section>
@@ -174,9 +177,8 @@
 </template>
 <script setup>
 import UserLayout from "./Layouts/UserLayout.vue";
-import {computed, reactive} from "vue";
-import {router, useForm, usePage} from "@inertiajs/vue3";
-import Swal from "sweetalert2";
+import {computed, reactive, ref} from "vue";
+import {router, useForm, usePage, Link} from "@inertiajs/vue3";
 import {displayAllNotifications} from "@/Helpers/notification.js";
 import InputError from "@/Components/InputError.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -187,21 +189,21 @@ defineProps({
     errors: Object
 })
 
-// const products = computed(() => {
-//     return usePage().props.cartItems.data.products
-// })
+const addressFormVisible = ref(usePage().props.userAddress === null)
+
+const addressFormVisibleToggle = () => {
+    addressFormVisible.value = !addressFormVisible.value
+}
+
 const total = computed(() => {
     return usePage().props.total
 })
 const cartItems = computed(() => {
     return usePage().props.cartItems
-}
-)
+})
 const errors = computed(() => {
-        return usePage().props.errors
-    }
-)
-console.log(errors)
+    return usePage().props.errors
+})
 const getCartItemIndexByProductId = (id) => {
     return cartItems.data.findIndex(item => item.product_id === id)
 }
@@ -234,24 +236,39 @@ const formFilled = computed(() => {
     return addressForm.type !== '' && addressForm.address !== '' && addressForm.city !== '' && addressForm.state !== ''
         && addressForm.zipcode !== '' && addressForm.country_code !== ''
 })
-const submit = async () => {
+const submitCheckout = async () => {
     try {
         await router.post(route('checkout.store'), {
             cartItems: usePage().props.cartItems.data,
-            total: usePage().props.total,
-            address: addressForm
-        },{
+            total: usePage().props.total
+        }, {
+            onSuccess: (page) => {
+                displayAllNotifications(page)
+            },
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+const submitAddressForm = async () => {
+    const formData = new FormData();
+    formData.append('type', addressForm.type)
+    formData.append('address', addressForm.address)
+    formData.append('city', addressForm.city)
+    formData.append('state', addressForm.state)
+    formData.append('zipcode', addressForm.zipcode)
+    formData.append('country_code', addressForm.country_code)
+    formData.append('_method', 'PATCH')
+
+    try {
+        await router.post(route('profile.updateAddress'), formData, {
+            preserveScroll: true,
             onSuccess: (page) => {
                 displayAllNotifications(page)
                 addressForm.reset()
-            },
-            onError: () => {
-                if (addressForm.errors.type) {
-                    addressForm.reset('type');
-                }
-            },
+                addressFormVisibleToggle()
+            }
         })
-
     } catch (e) {
         console.log(e)
     }

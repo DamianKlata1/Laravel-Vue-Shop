@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\User;
 
 use App\Helpers\CookieCartHelper;
 use App\Http\Requests\User\CartStoreRequest;
@@ -8,8 +8,6 @@ use App\Http\Resources\CartItemResource;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\UserAddress;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CartService

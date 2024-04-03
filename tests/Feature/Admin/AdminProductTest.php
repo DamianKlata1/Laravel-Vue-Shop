@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -49,10 +50,12 @@ class AdminProductTest extends TestCase
     public function test_product_can_be_created()
     {
         $product = Product::factory()->make()->toArray();
-        $product['product_images'] = [UploadedFile::fake()->image('product1.jpg')];
+        Storage::fake('product_images');
+        $product['product_images'] = [UploadedFile::fake()->image('product1.jpg')->size(10000)->mimeType('image/jpeg')];
 
         $response = $this->actingAs($this->admin)->post('/admin/products/store', $product);
 
+        Storage::disk('product_images')->assertExists('product1.jpg');
         $response->assertRedirect('/admin/products');
         $this->assertDatabaseHas('products', ['title' => $product['title']]);
     }

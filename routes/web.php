@@ -26,14 +26,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('trackVisitor')->group(function () {
     Route::get('/',[UserHomeController::class, 'index'])->name('user.home');
 
-
-
     Route::middleware(['auth','verified'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('user.dashboard');
 
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::prefix('profile')->group(function () {
+            Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::patch('/update', [ProfileController::class, 'update'])->name('profile.update');
+            Route::delete('/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
+            Route::patch('/update-address', [ProfileController::class, 'updateAddress'])->name('profile.updateAddress');
+        });
+
 
         Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
             Route::post('/order', 'store')->name('checkout.store');
@@ -47,6 +49,8 @@ Route::middleware('trackVisitor')->group(function () {
             Route::delete('/delete/{wishlistItem}', 'delete')->name('wishlist.delete');
         });
 
+
+
         Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('review.store');
         Route::post('/reviews/{review}/helpful-toggle', [ReviewController::class, 'toggleMarkAsHelpful'])->name('review.helpful');
         Route::delete('/reviews/{review}/delete', [ReviewController::class, 'destroy'])->name('review.delete');
@@ -58,6 +62,8 @@ Route::middleware('trackVisitor')->group(function () {
         Route::patch('/update/{product}', 'update')->name('cart.update');
         Route::delete('/delete/{product}', 'delete')->name('cart.delete');
     });
+
+
 
     Route::prefix('products')->controller(UserProductController::class)->group(function () {
         Route::get('/{product}', 'showDetails')->name('products.showDetails');

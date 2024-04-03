@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Helpers\UserCartHelper;
-use App\Helpers\CookieCartHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\CartStoreRequest;
-use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
-use App\Models\CartItem;
 use App\Models\Product;
-use App\Models\UserAddress;
-use App\Services\CartService;
+use App\Services\User\CartService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -27,7 +22,7 @@ class CartController extends Controller
     public function view(Request $request): Response|RedirectResponse
     {
         $data = $this->cartService->getCartData($request);
-        if(!$data) {
+        if (!$data) {
             return redirect()->route('user.home')->with('info', 'Your cart is empty!');
         }
 
