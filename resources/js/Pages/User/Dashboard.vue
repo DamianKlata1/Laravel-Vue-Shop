@@ -82,7 +82,7 @@
     </UserLayout>
 </template>
 <script setup>
-import UserLayout from './layouts/UserLayout.vue'
+import UserLayout from './Layouts/UserLayout.vue'
 import {formatDate} from "@/Helpers/dateFormatter";
 
 defineProps({

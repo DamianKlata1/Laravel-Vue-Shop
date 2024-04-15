@@ -15,7 +15,6 @@ services:
             - ./node_modules:/var/www/node_modules
         ports:
             - "8000:8000"
-            - "5173:5173"
         depends_on:
             - database
     database:
