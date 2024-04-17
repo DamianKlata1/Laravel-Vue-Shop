@@ -1,5 +1,5 @@
 # About
-
+Shop platform app build with Laravel, Vue, Inertia.js, TailwindCSS, Stripe API and Docker.
 
 # Installation
 1. Clone the repository:
